@@ -15,24 +15,24 @@
             <Link href="/" class="hover-underline">Home</Link>
             <Link href="/pets" class="hover-underline">Our Pets</Link>
 
-            <!-- Role-based Links -->
-            <template v-if="user && isShelterOrAdmin">
+            <!-- Shelter/Admin Links -->
+            <template v-if="isShelterOrAdmin">
                 <Link href="/pets/create" class="hover-underline">Add Pet</Link>
                 <Link href="/adopt/pending" class="hover-underline"
                     >Pending Requests</Link
                 >
             </template>
 
-            <!-- Adopter-specific Link -->
+            <!-- Adopter Link -->
             <template v-if="isAdopter">
                 <Link href="/adopt" class="hover-underline"
                     >Apply for Adoption</Link
                 >
             </template>
 
-            <!-- User Dropdown -->
+            <!-- Authenticated Dropdown -->
             <template v-if="user">
-                <div class="relative z-20">
+                <div class="relative z-20" @mouseleave="dropdownOpen = false">
                     <button
                         @click="toggleDropdown"
                         class="flex items-center space-x-2 px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 cursor-pointer"
@@ -67,24 +67,20 @@
                                     >Profile</Link
                                 >
                             </li>
-                            <template v-if="isAdopter">
-                                <li>
-                                    <Link
-                                        href="/adopt/log"
-                                        class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                                        >Adoption Log</Link
-                                    >
-                                </li>
-                            </template>
-                            <template v-if="isAdmin">
-                                <li>
-                                    <Link
-                                        href="/admin/dashboard"
-                                        class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                                        >Dashboard</Link
-                                    >
-                                </li>
-                            </template>
+                            <li v-if="isAdopter">
+                                <Link
+                                    href="/adopt/log"
+                                    class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                                    >Adoption Log</Link
+                                >
+                            </li>
+                            <li v-if="isAdmin">
+                                <Link
+                                    href="/admin/users"
+                                    class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                                    >Dashboard</Link
+                                >
+                            </li>
                             <li>
                                 <Link
                                     href="/settings"
@@ -107,9 +103,9 @@
                 </div>
             </template>
 
-            <!-- Login and Register Links -->
+            <!-- Guest Links -->
             <template v-else>
-                <Link href="/login" class="hover-underline">Log in</Link>
+                <Link href="/login" class="hover-underline">Login</Link>
                 <Link href="/register" class="hover-underline">Register</Link>
             </template>
         </div>
@@ -120,33 +116,27 @@
 import { ref, computed } from "vue";
 import { usePage, Link, router } from "@inertiajs/vue3";
 
-const dropdownOpen = ref(false);
-
-// Get user info from Inertia's page props
+// Always define user first!
 const { user } = usePage().props;
+const dropdownOpen = ref(false);
 
 // Toggle the dropdown menu
 const toggleDropdown = () => {
     dropdownOpen.value = !dropdownOpen.value;
 };
 
-// Check user roles
-const isShelterOrAdmin = computed(
-    () =>
-        user &&
-        Array.isArray(user.roles) &&
-        (user.roles.includes("Shelter") || user.roles.includes("Administrator"))
+// Defensive role checks
+const getRoles = () => (user && Array.isArray(user.roles) ? user.roles : []);
+
+const isShelterOrAdmin = computed(() =>
+    getRoles().includes("Shelter") || getRoles().includes("Administrator")
 );
-const isAdopter = computed(
-    () => user && Array.isArray(user.roles) && user.roles.includes("Adopter")
-);
-const isAdmin = computed(
-    () => user && Array.isArray(user.roles) && user.roles.includes("Administrator")
-);
+const isAdopter = computed(() => getRoles().includes("Adopter"));
+const isAdmin = computed(() => getRoles().includes("Administrator"));
 
 // Logout function
 const logout = () => {
-    // Inertia form submission for logout
     router.post("/logout");
+    dropdownOpen.value = false;
 };
 </script>

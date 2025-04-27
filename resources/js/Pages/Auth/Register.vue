@@ -88,18 +88,12 @@ export default {
         const flashError = ref(page.props.flash?.error || null);
 
         const submitForm = () => {
-            console.log('Submitting register form:', form.data());
             form.post('/register', {
-                onFinish: () => {
-                    console.log('Form submission finished');
-                },
                 onError: (errors) => {
-                    console.log('Registration errors:', errors);
                     flashError.value = Object.values(errors)[0] || 'Registration failed. Please check your inputs.';
                 },
                 onSuccess: () => {
-                    console.log('Registration successful');
-                    flashMessage.value = page.props.flash?.success || 'Registration successful!';
+                    flashMessage.value = 'Registration successful!';
                     Inertia.get('/pets');
                 },
             });
