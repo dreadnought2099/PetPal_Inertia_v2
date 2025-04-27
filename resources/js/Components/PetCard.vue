@@ -7,7 +7,7 @@
         ? 'cursor-not-allowed pointer-events-none border-secondary opacity-75'
         : 'hover:shadow-lg border-primary transition-shadow duration-200 cursor-pointer'
     ]"
-    @click="handleCardClick"
+    @click="$emit('card-click', pet)"
   >
     <span
       v-if="pet.status === 'adopted'"
@@ -39,7 +39,7 @@
 
     <template v-if="pet.status !== 'adopted'">
       <button
-        @click.stop="onSeeMore"
+        @click.stop="$emit('see-more', pet)"
         class="mt-4 text-primary hover-underline-hyperlink cursor-pointer"
       >
         See more
@@ -59,14 +59,6 @@ const props = defineProps({
 });
 const emit = defineEmits(['see-more', 'card-click']);
 
-function onSeeMore() {
-  emit('see-more', props.pet);
-}
-function handleCardClick() {
-  if (props.pet.status !== 'adopted') {
-    emit('card-click', props.pet);
-  }
-}
 function capitalize(str) {
   if (!str) return '';
   return str.charAt(0).toUpperCase() + str.slice(1);

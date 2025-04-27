@@ -1,5 +1,6 @@
 <template>
-  <div class="container mx-auto max-w-4xl bg-white mt-4 border border-primary rounded-lg shadow-md overflow-auto h-[80vh] p-6 space-y-10">
+  <AppLayout>
+    <div class="container mx-auto max-w-4xl bg-white mt-4 border border-primary rounded-lg shadow-md overflow-auto h-[80vh] p-6 space-y-10">
     <h1 class="flex items-center justify-center text-xl font-bold bg-white sticky top-0 py-3 px-4 z-10">
       Pending Adoption <span class="text-primary ml-1">Requests</span>
     </h1>
@@ -80,9 +81,11 @@
       </div>
     </div>
   </div>
+  </AppLayout>
 </template>
 
 <script setup>
+import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref, computed } from 'vue';
 import { usePage, router } from '@inertiajs/vue3';
 import dayjs from 'dayjs';
