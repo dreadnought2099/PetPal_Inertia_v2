@@ -2,8 +2,9 @@
 import { ref } from 'vue';
 import { usePage, router, Link } from '@inertiajs/vue3';
 import AppLayout from '../../Layouts/AppLayout.vue';
+import PetCard from '@/Components/PetCard.vue';
 
-const pets = usePage().props.pets;  // You should pass 'pets' from the controller
+const pets = usePage().props.pets || [];
 const selectedPetId = ref(null);
 
 const showPetModal = (id) => {
@@ -26,72 +27,26 @@ const deletePet = (id, name) => {
       </h2>
     </div>
 
-    <div class="flex flex-wrap gap-2 p-6 h-[70vh] overflow-y-auto select-none">
-      <template v-if="pets.length">
-        <div
-          v-for="pet in pets"
-          :key="pet.id"
-          :class="[
-            'basis-[249px] bg-white p-4 rounded-lg shadow-md relative border-1 transition-transform ease-in-out duration-300',
-            pet.status === 'adopted'
-              ? 'cursor-not-allowed pointer-events-none border-secondary opacity-75'
-              : 'hover:scale-90 hover:shadow-lg border-primary cursor-pointer'
-          ]"
-          @click="pet.status !== 'adopted' && showPetModal(pet.id)"
-        >
-          <span
-            v-if="pet.status === 'adopted'"
-            class="absolute top-2 right-2 bg-note text-white text-xs px-2 py-1 rounded-full z-20"
-          >
-            Adopted
-          </span>
-
-          <img
-            :src="pet.pet_profile_path ? `/storage/${pet.pet_profile_path}` : '/images/LRM_20240517_192913-01.jpeg'"
-            :alt="pet.name"
-            class="w-full h-48 object-cover rounded-lg"
-            :class="{'grayscale': pet.status === 'adopted'}"
-          />
-
-          <h3 class="text-xl font-bold mt-4">{{ pet.name }}</h3>
-          <p class="text-gray-600">{{ pet.breed }}</p>
-
-          <p class="text-sm mt-2 font-medium"
-             :class="{
-                'text-note': pet.status === 'adopted',
-                'text-yellow-500': pet.status === 'pending',
-                'text-primary': pet.status === 'available'
-             }">
-            <span class="text-black">Status:</span> {{ pet.status ?? 'Available' }}
-          </p>
-
-          <template v-if="pet.status !== 'adopted'">
-            <button
-              @click.stop="showPetModal(pet.id)"
-              class="mt-4 text-primary hover-underline-hyperlink cursor-pointer"
-            >
-              See more
-            </button>
-          </template>
-
-          <template v-else>
-            <p class="mt-4 text-note text-sm">{{ pet.name }} has been adopted</p>
-          </template>
-        </div>
-      </template>
-
-      <div v-else class="w-full flex flex-col items-center justify-center text-center py-16">
-        <p class="text-lg text-gray-500 mb-4">
-          No pets available for adoption at this time.
-        </p>
-        <Link
-          v-if="$page.props.auth?.user?.can?.['create pet listing']"
-          href="/pets/create"
-          class="inline-block bg-primary text-white px-6 py-2.5 rounded-lg hover:bg-primary-dark transition duration-200 ease-in-out shadow-md"
-        >
-          Add a Pet
-        </Link>
-      </div>
+    <div v-if="pets.length" class="flex flex-wrap gap-2 p-6 h-[70vh] overflow-y-auto select-none">
+      <PetCard
+        v-for="pet in pets"
+        :key="pet.id"
+        :pet="pet"
+        @see-more="showPetModal"
+        @card-click="showPetModal"
+      />
+    </div>
+    <div v-else class="w-full flex flex-col items-center justify-center text-center py-16">
+      <p class="text-lg text-gray-500 mb-4">
+        No pets available for adoption at this time.
+      </p>
+      <Link
+        v-if="$page.props.auth?.user?.can?.['create pet listing']"
+        href="/pets/create"
+        class="inline-block bg-primary text-white px-6 py-2.5 rounded-lg hover:bg-primary-dark transition duration-200 ease-in-out shadow-md"
+      >
+        Add a Pet
+      </Link>
     </div>
 
     <!-- Modals -->

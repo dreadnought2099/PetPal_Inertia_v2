@@ -16,7 +16,7 @@
             <Link href="/pets" class="hover-underline">Our Pets</Link>
 
             <!-- Role-based Links -->
-            <template v-if="isShelterOrAdmin">
+            <template v-if="user && isShelterOrAdmin">
                 <Link href="/pets/create" class="hover-underline">Add Pet</Link>
                 <Link href="/adopt/pending" class="hover-underline"
                     >Pending Requests</Link
@@ -134,10 +134,15 @@ const toggleDropdown = () => {
 const isShelterOrAdmin = computed(
     () =>
         user &&
+        Array.isArray(user.roles) &&
         (user.roles.includes("Shelter") || user.roles.includes("Administrator"))
 );
-const isAdopter = computed(() => user && user.roles.includes("Adopter"));
-const isAdmin = computed(() => user && user.roles.includes("Administrator"));
+const isAdopter = computed(
+    () => user && Array.isArray(user.roles) && user.roles.includes("Adopter")
+);
+const isAdmin = computed(
+    () => user && Array.isArray(user.roles) && user.roles.includes("Administrator")
+);
 
 // Logout function
 const logout = () => {
