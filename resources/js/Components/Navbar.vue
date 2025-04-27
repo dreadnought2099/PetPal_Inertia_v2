@@ -118,7 +118,7 @@
 
 <script setup>
 import { ref, computed } from "vue";
-import { usePage, Link } from "@inertiajs/vue3";
+import { usePage, Link, router } from "@inertiajs/vue3";
 
 const dropdownOpen = ref(false);
 
@@ -142,6 +142,6 @@ const isAdmin = computed(() => user && user.roles.includes("Administrator"));
 // Logout function
 const logout = () => {
     // Inertia form submission for logout
-    Inertia.post("/logout");
+    router.post("/logout");
 };
 </script>

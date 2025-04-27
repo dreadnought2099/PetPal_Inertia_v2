@@ -23,17 +23,22 @@ class LoginController extends Controller
     {
         $validated = $request->validate([
             'email' => 'required|email',
-            'password' => 'required'
+            'password' => 'required',
         ]);
 
         // Attempt login
         if (!Auth::attempt($validated)) {
-            return Redirect::back()->with('error', 'Invalid email or password');
+            return back()->withErrors([
+                'email' => 'Invalid email or password',
+            ])->onlyInput('email');
         }
-        
+
         $user = Auth::user();
+
+        // Optional: send welcome email
         Mail::to($user->email)->queue(new WelcomeMail($user));
-        
+
+        // Return Inertia-compatible redirect
         return redirect()->route('pets.index')->with('success', "Login successful! Welcome, {$user->name}.");
     }
 
@@ -44,6 +49,7 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/login');
+        // Return Inertia-friendly redirect
+        return redirect()->route('home');
     }
 }
