@@ -1,5 +1,16 @@
 import { createApp, h } from 'vue'
 import { createInertiaApp } from '@inertiajs/vue3'
+import { InertiaProgress } from '@inertiajs/progress';
+
+// For progress bar during page loads
+InertiaProgress.init({
+    color: '#ff5733',
+    showSpinner: false,
+    delay: 100,
+    includeCSS: false,
+    ease: 'ease-in-out',
+    speed: 800,
+}); 
 
 createInertiaApp({
     resolve: name => {
