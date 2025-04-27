@@ -1,4 +1,5 @@
 <template>
+  <AppLayout>
     <div class="max-w-lg mx-auto mt-10 p-6 bg-white rounded shadow-md">
       <h2 class="text-2xl font-semibold text-center mb-4">Verify Your Email Address</h2>
   
@@ -21,12 +22,13 @@
         </button>
       </form>
     </div>
+  </AppLayout>
   </template>
   
   <script setup>
   import { ref } from 'vue';
   import { useForm, usePage } from '@inertiajs/vue3';
-  
+  import AppLayout from '../../Layouts/AppLayout.vue';
   const page = usePage();
   const resent = ref(page.props.resent || false);
   

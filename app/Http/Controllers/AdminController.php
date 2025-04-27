@@ -17,7 +17,7 @@ class AdminController extends Controller
         $users = User::with('roles')->get();
         $roles = Role::all();
 
-        return Inertia::render('Admin/AdminDashboard', [
+        return Inertia::render('Admin/Index', [
             'users' => $users,
             'roles' => $roles
         ]);
