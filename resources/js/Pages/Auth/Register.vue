@@ -1,3 +1,9 @@
 <template>
-    <h1 class="hover-underline-hyperlink">Register</h1>
+    <AppLayout>
+    <h1>Register</h1>
+    </AppLayout>
 </template>
+
+<script setup>
+import AppLayout from '../../Layouts/AppLayout.vue';
+</script>

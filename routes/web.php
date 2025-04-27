@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AboutController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdoptionController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -18,9 +19,7 @@ Route::get('/', function () {
     return Inertia::render('Home');
 })->name('home');
 
-Route::get('/about', function () {
-    return Inertia::render('About/Index');
-})->name('about');
+Route::get('/about', [AboutController::class, 'index'])->name('about.index');
 
 Route::get('/contact', function () {
     return Inertia::render('Contact/Index');
