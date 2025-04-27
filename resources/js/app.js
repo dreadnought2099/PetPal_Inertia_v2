@@ -4,7 +4,7 @@ import { InertiaProgress } from '@inertiajs/progress';
 
 // For progress bar during page loads
 InertiaProgress.init({
-    color: '#ff5733',
+    color: '#49b451',
     showSpinner: false,
     delay: 100,
     includeCSS: false,

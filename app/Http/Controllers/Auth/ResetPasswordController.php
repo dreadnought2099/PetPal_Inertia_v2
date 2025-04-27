@@ -32,7 +32,7 @@ class ResetPasswordController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return back()->withErrors($validator)->withInput();
+            return redirect()->back()->withErrors($validator)->withInput();
         }
 
         // Attempt to reset the password using the token
@@ -51,6 +51,6 @@ class ResetPasswordController extends Controller
         // Redirect based on the result of the reset
         return $response == Password::PASSWORD_RESET
             ? redirect()->route('login')->with('success', 'Your password has been successfully reset. You can now log in.')
-            : back()->withErrors(['email' => 'Invalid token or email. Please try again.']);
+            : redirect()->back()->withErrors(['email' => 'Invalid token or email. Please try again.']);
     }
 }

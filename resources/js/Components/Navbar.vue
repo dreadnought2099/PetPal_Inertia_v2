@@ -109,7 +109,7 @@
 
             <!-- Login and Register Links -->
             <template v-else>
-                <Link href="/login" class="hover-underline">Login</Link>
+                <Link href="/login" class="hover-underline">Log in</Link>
                 <Link href="/register" class="hover-underline">Register</Link>
             </template>
         </div>
