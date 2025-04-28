@@ -94,7 +94,12 @@ class AdoptionController extends Controller
                 ->first();
 
             if ($existingRequest) {
-                return back()->with('error', 'You already have an active adoption request for this pet.');
+                $message = match($existingRequest->status) {
+                    Adoption::STATUS_PENDING => 'You already have a pending adoption request for this pet.',
+                    Adoption::STATUS_APPROVED => 'You have already adopted this pet.',
+                    default => 'You already have an active adoption request for this pet.'
+                };
+                return back()->with('error', $message);
             }
 
             // Handle file uploads

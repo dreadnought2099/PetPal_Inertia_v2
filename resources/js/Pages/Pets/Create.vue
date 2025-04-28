@@ -98,7 +98,7 @@
                         <option
                             v-for="(label, value) in select.options"
                             :key="value"
-                            :value="Number(value)"
+                            :value="select.isString ? value : Number(value)"
                         >
                             {{ label }}
                         </option>
@@ -174,6 +174,7 @@
 </template>
 
 <script setup>
+import { ref } from "vue";
 import { useForm } from "@inertiajs/vue3";
 import AppLayout from "../../Layouts/AppLayout.vue";
 
@@ -189,7 +190,7 @@ const textFields = [
 ];
 
 const selectFields = [
-    { name: "sex", label: "Sex", options: { M: "Male", F: "Female" } },
+    { name: "sex", label: "Sex", options: { M: "Male", F: "Female" }, isString: true },
     { name: "species", label: "Species", options: { 0: "Dog", 1: "Cat" } },
     {
         name: "vaccination",
@@ -214,9 +215,15 @@ const form = useForm({
 function submit() {
     form.species = Number(form.species);
     form.vaccination = Number(form.vaccination);
+    form.spayed_neutered = Number(form.spayed_neutered);
     form.post('/pets', {
         forceFormData: true,
-        onSuccess: () => form.reset("profile"),
+        onSuccess: () => {
+            form.reset("profile");
+        },
+        onError: (errors) => {
+            // Error will be shown via flash message
+        }
     });
 }
 
