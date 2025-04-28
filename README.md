@@ -1,17 +1,17 @@
 INERTIA.JS Setup
 
 
-composer create-project laravel/laravel your-project-name
-cd your-project-name
+1. composer create-project laravel/laravel your-project-name
+2. cd your-project-name
 
 
-npm install vue@latest
+3. npm install vue@latest
 
 
-composer require inertiajs/inertia-laravel
+4. composer require inertiajs/inertia-laravel
 
 
-Create a new file at resources/views/app.blade.php:
+5. Create a new file at resources/views/app.blade.php:
 
 <!DOCTYPE html>
 <html>
@@ -28,9 +28,9 @@ Create a new file at resources/views/app.blade.php:
 
 
 
-php artisan inertia:middleware
+6. php artisan inertia:middleware
 
-Add the middleware to your bootstrap/app.php:
+7. Add the middleware to your bootstrap/app.php:
 
 use App\Http\Middleware\HandleInertiaRequests;
 ->withMiddleware(function (Middleware $middleware) {
@@ -40,9 +40,9 @@ use App\Http\Middleware\HandleInertiaRequests;
 })
 
 
-npm install @inertiajs/vue3
+8. npm install @inertiajs/vue3
 
-Update your resources/js/app.js:
+9. Update your resources/js/app.js:
 
 import { createApp, h } from 'vue'
 import { createInertiaApp } from '@inertiajs/vue3'
@@ -58,9 +58,9 @@ createInertiaApp({
     },
 })
 
-npm install @vitejs/plugin-vue
+10. npm install @vitejs/plugin-vue
 
-Update your vite.config.js:
+11. Update your vite.config.js:
 
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
