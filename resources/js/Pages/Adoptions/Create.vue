@@ -37,7 +37,9 @@ function submit() {
   form.post('/adopt/request', {
     onSuccess: () => {
       form.reset()
-    }
+    },
+    preserveScroll: true,
+    forceFormData: true
   })
 }
 </script>
@@ -74,7 +76,7 @@ function submit() {
         </ul>
       </div>
 
-      <form @submit.prevent="submit" class="rounded-lg px-8 pt-6 pb-8 mb-4 space-y-6 z-9">
+      <form @submit.prevent="submit" class="rounded-lg px-8 pt-6 pb-8 mb-4 space-y-6 z-9" enctype="multipart/form-data">
         <!-- Select Pet -->
         <div class="p-3 bg-gray-100 rounded-md">
           <label class="font-semibold">Select Pet</label>
@@ -99,7 +101,7 @@ function submit() {
 
         <div class="relative bg-inherit">
           <input type="text" v-model="form.middle_name" class="peer py-3 w-full placeholder-transparent rounded-md text-gray-700 ring-1 px-4 ring-gray-400 focus:ring-2 focus:ring-primary focus:border-primary outline-none" placeholder="Middle Name">
-          <label class="absolute cursor-text left-0 -top-3 text-sm text-gray-600 bg-white mx-1 px-1 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-3 peer-focus:text-primary peer-focus:text-sm peer-focus:bg-white peer-focus:px-2 peer-focus:rounded-md">Middle Name</label>
+          <label class="absolute cursor-text left-0 -top-3 text-sm text-gray-600 bg-white mx-1 px-1 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-3 peer-focus:text-primary peer-focus:text-sm peer-focus:bg-white peer-focus:px-2 peer-focus:rounded-md">Middle Name (optional)</label>
         </div>
 
         <div class="relative bg-inherit">

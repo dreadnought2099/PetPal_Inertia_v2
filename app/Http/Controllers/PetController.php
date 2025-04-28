@@ -74,7 +74,7 @@ class PetController extends Controller
         if ($request->hasFile('profile')) {
             $file = $request->file('profile');
             $cleanPetName = Str::slug($validated['name']);
-            $filename = $cleanPetName . '-' . time() . '-' . $file->getClientOriginalExtension();
+            $filename = $cleanPetName . '-' . time() . '.' . $file->getClientOriginalExtension();
             $path = $file->storeAs('pets/profile_photos', $filename, 'public');
             $validated['pet_profile_path'] = $path;
         }
@@ -148,7 +148,7 @@ class PetController extends Controller
         if ($request->hasFile('profile')) {
             $file = $request->file('profile');
             $cleanPetName = Str::slug($validated['name']);
-            $filename = $cleanPetName . '-' . time() . '-' . $file->getClientOriginalExtension();
+            $filename = $cleanPetName . '-' . time() . '.' . $file->getClientOriginalExtension();
             $path = $file->storeAs('pets/profile_photos', $filename, 'public');
             $validated['pet_profile_path'] = $path;
         }

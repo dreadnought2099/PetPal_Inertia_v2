@@ -35,18 +35,6 @@ class AdoptionController extends Controller
         
         // Get all available and pending pets
         $pets = Pet::whereIn('status', [Pet::STATUS_AVAILABLE, Pet::STATUS_PENDING])->get();
-        
-        // // If user is logged in, exclude pets they already have pending requests for
-        // if ($user) {
-        //     $userPendingPetIds = Adoption::where('user_id', $user->id)
-        //         ->whereIn('status', ['pending', 'approved'])
-        //         ->pluck('pet_id')
-        //         ->toArray();
-                
-        //     $pets = $pets->filter(function($pet) use ($userPendingPetIds) {
-        //         return !in_array($pet->id, $userPendingPetIds);
-        //     });
-        // }
 
         $selectedPet = $pet ? Pet::find($pet) : null;
 
@@ -69,8 +57,8 @@ class AdoptionController extends Controller
                 'address' => 'required|string|max:255',
                 'contact_number' => 'required|string|max:20',
                 'dob' => 'required|date|before:-18 years',
-                'valid_id' => 'required|image|max:2048',
-                'valid_id_back' => 'required|image|max:2048',
+                'valid_id' => 'required|file|mimes:jpeg,png,jpg,pdf|max:51200',
+                'valid_id_back' => 'required|file|mimes:jpeg,png,jpg,pdf|max:51200',
                 'previous_experience' => 'required|in:yes,no',
                 'other_pets' => 'required|in:yes,no',
                 'financial_preparedness' => 'required|in:yes,no',
@@ -103,8 +91,8 @@ class AdoptionController extends Controller
             }
 
             // Handle file uploads
-            $validIdPath = $request->file('valid_id')->store('valid_ids', 'public');
-            $validIdBackPath = $request->file('valid_id_back')->store('valid_ids', 'public');
+            $validIdPath = $request->file('valid_id')->store('adoption/valid_ids', 'public');
+            $validIdBackPath = $request->file('valid_id_back')->store('adoption/valid_ids', 'public');
 
             Log::info('Files stored at:', [
                 'valid_id' => $validIdPath,
@@ -131,7 +119,7 @@ class AdoptionController extends Controller
             // Update pet status
             $pet->update(['status' => Pet::STATUS_PENDING]);
 
-            return redirect()->route('adoptions.log')
+            return redirect()->route('adopt.log')
                 ->with('success', 'Your adoption request has been submitted successfully! We will review your application and get back to you soon.');
 
         } catch (\Illuminate\Database\QueryException $e) {
@@ -240,6 +228,10 @@ class AdoptionController extends Controller
             return back()->with('error', 'Only pending adoption requests can be deleted.');
         }
 
+        // Update pet status back to available
+        $pet = $adoption->pet;
+        $pet->update(['status' => Pet::STATUS_AVAILABLE]);
+
         if (method_exists($adoption, 'forceDelete')) {
             $adoption->forceDelete();
         } else {
@@ -249,6 +241,8 @@ class AdoptionController extends Controller
         Log::info("Adoption request with ID {$adoption->id} deleted successfully", [
             'deleted_by' => Auth::id(),
             'adoption_id' => $adoption->id,
+            'pet_id' => $pet->id,
+            'pet_new_status' => Pet::STATUS_AVAILABLE
         ]);
 
         return back()->with('success', "Adoption request with ID {$adoption->id} deleted successfully.");

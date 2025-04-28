@@ -29,7 +29,7 @@
             autocomplete="username"
           />
           <label for="email" :class="labelClasses">Email</label>
-          <p v-if="form.errors.email" class="text-xs text-red-500 mt-1">{{ form.errors.email }}</p>
+          <!-- <p v-if="form.errors.email" class="text-xs text-red-500 mt-1">{{ form.errors.email }}</p> -->
         </div>
 
         <div class="relative">
@@ -44,7 +44,7 @@
             autocomplete="current-password"
           />
           <label for="password" :class="labelClasses">Password</label>
-          <p v-if="form.errors.password" class="text-xs text-red-500 mt-1">{{ form.errors.password }}</p>
+          <!-- <p v-if="form.errors.password" class="text-xs text-red-500 mt-1">{{ form.errors.password }}</p> -->
         </div>
 
         <div class="text-right">

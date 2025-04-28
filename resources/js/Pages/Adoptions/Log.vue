@@ -9,16 +9,16 @@
               </h2>
 
               <!-- Flash Messages -->
-              <FlashMessage
-                v-if="page.props.flash.success"
+              <!-- <FlashMessage
+                v-if="flash.success"
                 type="success"
-                :message="page.props.flash.success"
+                :message="flash.success"
               />
               <FlashMessage
-                v-if="page.props.flash.error"
+                v-if="flash.error"
                 type="error"
-                :message="page.props.flash.error"
-              />
+                :message="flash.error"
+              /> -->
 
               <div v-if="pendingAdoptions.length === 0" class="text-center py-8">
                 <p class="text-gray-500 text-lg">No pending adoption requests found.</p>
@@ -88,10 +88,19 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import { Head, Link, usePage, useForm } from '@inertiajs/vue3'
 import AppLayout from '../../Layouts/AppLayout.vue'
 import FlashMessage from '../../Components/FlashMessage.vue'
 
+const props = defineProps({
+  adoptions: Array,
+  flash: Object,
+  errors: Object,
+  user: Object,
+})
+
+const flash = computed(() => props.flash)
 const page = usePage()
 const adoptions = page.props.adoptions || []
 const authUser = page.props.auth?.user || null
@@ -110,9 +119,15 @@ function capitalize(str) {
 }
 
 function canManageAdoption(adoption) {
-  return adoption.status.toLowerCase() === 'pending' && 
-         authUser && 
-         authUser.id === adoption.user_id
+  if (!authUser) return false;
+  
+  const isPending = adoption.status.toLowerCase() === 'pending';
+  const isOwner = authUser.id === adoption.user_id;
+  const isAdminOrShelter = authUser.roles?.some(role => 
+    role.name === 'Administrator' || role.name === 'Shelter'
+  );
+
+  return isPending && (isOwner || isAdminOrShelter);
 }
 
 function deleteAdoption(id) {
