@@ -25,7 +25,7 @@
 
             <!-- Adopter Link -->
             <template v-if="isAdopter">
-                <Link href="/adopt" class="hover-underline"
+                <Link href="/adopt/apply" class="hover-underline"
                     >Apply for Adoption</Link
                 >
             </template>

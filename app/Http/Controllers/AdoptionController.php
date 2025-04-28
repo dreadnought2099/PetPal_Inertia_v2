@@ -20,19 +20,19 @@ class AdoptionController extends Controller
 
     public function index(): Response
     {
+        $pets = Pet::where('status', 'available')->get();
         $adoptions = Adoption::with('user', 'pet')->get();
-        $pets = Pet::all();
 
         return Inertia::render('Adoptions/Index', [
-            'adoptions' => $adoptions,
             'pets' => $pets,
+            'adoptions' => $adoptions
         ]);
     }
 
-    public function create($pet): Response
+    public function create($pet = null): Response
     {
-        $selectedPet = Pet::find($pet);
-        $pets = Pet::all();
+        $pets = Pet::where('status', 'available')->get();
+        $selectedPet = $pet ? Pet::find($pet) : null;
 
         return Inertia::render('Adoptions/Create', [
             'selectedPet' => $selectedPet,
