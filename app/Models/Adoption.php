@@ -11,6 +11,10 @@ class Adoption extends Model
 {
     use HasFactory;
 
+    const STATUS_PENDING = 'pending';
+    const STATUS_APPROVED = 'approved';
+    const STATUS_REJECTED = 'rejected';
+
     protected $table = 'adoption_requests';
 
     protected $fillable = [

@@ -2,11 +2,14 @@
 import { useForm, Head, Link } from '@inertiajs/vue3'
 import { computed } from 'vue'
 import AppLayout from '../../Layouts/AppLayout.vue'
+import FlashMessage from '../../Components/FlashMessage.vue'
 
 const props = defineProps({
   selectedPet: Object,
   pets: Array,
   user: Object,
+  flash: Object,
+  errors: Object,
 })
 
 const form = useForm({
@@ -31,7 +34,11 @@ const maxDob = computed(() => {
 })
 
 function submit() {
-  form.post('/adopt/request')
+  form.post('/adopt/request', {
+    onSuccess: () => {
+      form.reset()
+    }
+  })
 }
 </script>
 
@@ -44,6 +51,28 @@ function submit() {
         Apply for
         <span class="text-primary"> Adoption</span>
       </h1>
+
+      <!-- Flash Messages -->
+      <FlashMessage
+        v-if="flash.success"
+        type="success"
+        :message="flash.success"
+      />
+
+      <FlashMessage
+        v-if="flash.error"
+        type="error"
+        :message="flash.error"
+      />
+
+      <!-- Form Errors -->
+      <div v-if="Object.keys(errors).length" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative m-4" role="alert">
+        <ul>
+          <li v-for="(error, field) in errors" :key="field" class="block sm:inline">
+            {{ error }}
+          </li>
+        </ul>
+      </div>
 
       <form @submit.prevent="submit" class="rounded-lg px-8 pt-6 pb-8 mb-4 space-y-6 z-9">
         <!-- Select Pet -->
@@ -126,7 +155,7 @@ function submit() {
             class="border-1 hover:border-primary bg-primary hover:bg-white hover:text-primary cursor-pointer text-white font-bold py-2 px-4 rounded-lg transition hover:scale-105 hover:opacity-80 duration-300 ease-in-out">
             Apply Now
           </button>
-          <Link :href="user ? '/pets' : '/home'"
+          <Link :href="props.user ? '/pets' : '/home'"
             class="border-1 hover:border-primary bg-white hover:bg-white hover:text-primary text-dark font-bold py-2 px-4 rounded-lg transition hover:scale-105 hover:opacity-80 duration-300 ease-in-out">
             Back
           </Link>
