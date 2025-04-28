@@ -1,26 +1,41 @@
-<template>
-    <AppLayout>
-  <div class="container mx-auto p-4">
-    <h2 class="text-2xl font-bold mb-6">All Adoption Requests</h2>
-    <div v-if="adoptions.length === 0" class="text-gray-500">No adoption requests found.</div>
-    <div v-else class="grid gap-4">
-      <div v-for="adoption in adoptions" :key="adoption.id" class="bg-white p-4 rounded shadow">
-        <PetCard :pet="adoption.pet" />
-        <div class="mt-2">
-          <div><strong>Status:</strong> {{ adoption.status }}</div>
-          <div><strong>Applicant:</strong> {{ adoption.first_name }} {{ adoption.last_name }}</div>
-          <!-- Add more adoption details as needed -->
-        </div>
-      </div>
-    </div>
-    </div>
-    </AppLayout>
-</template>
-
 <script setup>
-import { usePage } from '@inertiajs/vue3';
-import PetCard from '@/Components/PetCard.vue';
-import AppLayout from '../../Layouts/AppLayout.vue';
+import { Head } from '@inertiajs/vue3'
 
-const adoptions = usePage().props.adoptions || [];
+defineProps({
+  adoptions: Array,
+  pets: Array,
+})
 </script>
+
+<template>
+  <Head title="Adoption List" />
+
+  <div class="container mx-auto mt-8">
+    <h1 class="text-3xl font-bold mb-6">Adoption Applications</h1>
+
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+      <table class="min-w-full leading-normal">
+        <thead>
+          <tr>
+            <th class="px-5 py-3 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              Pet Name
+            </th>
+            <th class="px-5 py-3 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              Adopter Name
+            </th>
+            <th class="px-5 py-3 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              Status
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="adoption in adoptions" :key="adoption.id" class="border-b">
+            <td class="px-5 py-5">{{ adoption.pet?.name || '-' }}</td>
+            <td class="px-5 py-5">{{ adoption.user?.name || '-' }}</td>
+            <td class="px-5 py-5 capitalize">{{ adoption.status }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</template>

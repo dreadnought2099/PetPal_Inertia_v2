@@ -26,72 +26,72 @@ const deletePet = (id, name) => {
 <template>
     <AppLayout>
         <div>
-            <div class="text-center mt-4 relative w-full">
-                <h2 class="text-3xl font-bold text-dark">
-                    Our <span class="text-primary">Pets</span>
-                </h2>
-            </div>
+    <div class="text-center mt-4 relative w-full">
+      <h2 class="text-3xl font-bold text-dark">
+        Our <span class="text-primary">Pets</span>
+      </h2>
+    </div>
 
-            <div
+        <div
                 v-if="pets.length"
                 class="flex flex-wrap gap-2 p-6 h-[70vh] overflow-y-auto select-none"
             >
                 <PetCard
-                    v-for="pet in pets"
-                    :key="pet.id"
+          v-for="pet in pets"
+          :key="pet.id"
                     :pet="pet"
                     @see-more="showPetModal"
                     @card-click="showPetModal"
                 />
-            </div>
+        </div>
             <div
                 v-else
                 class="w-full flex flex-col items-center justify-center text-center py-16"
             >
-                <p class="text-lg text-gray-500 mb-4">
-                    No pets available for adoption at this time.
-                </p>
-                <Link
-                    v-if="$page.props.auth?.user?.can?.['create pet listing']"
-                    href="/pets/create"
-                    class="inline-block bg-primary text-white px-6 py-2.5 rounded-lg hover:bg-primary-dark transition duration-200 ease-in-out shadow-md"
-                >
-                    Add a Pet
-                </Link>
-            </div>
+        <p class="text-lg text-gray-500 mb-4">
+          No pets available for adoption at this time.
+        </p>
+        <Link
+          v-if="$page.props.auth?.user?.can?.['create pet listing']"
+          href="/pets/create"
+          class="inline-block bg-primary text-white px-6 py-2.5 rounded-lg hover:bg-primary-dark transition duration-200 ease-in-out shadow-md"
+        >
+          Add a Pet
+        </Link>
+    </div>
 
-            <!-- Modals -->
+    <!-- Modals -->
             <div v-if="selectedPet">
                 <div
                     class="modal fixed inset-0 flex items-center justify-center z-50"
                     @click.self="selectedPet = null"
-                >
+      >
                     <div
                         class="bg-white flex relative flex-col rounded-xl w-100 max-w-md mx-2"
                     >
-                        <button
+          <button
                             @click="selectedPet = null"
-                            title="Click to close the modal"
-                            class="flex absolute right-3 text-red-500 text-4xl hover:text-gray-200 hover:cursor-pointer"
-                        >
-                            &times;
-                        </button>
+            title="Click to close the modal"
+            class="flex absolute right-3 text-red-500 text-4xl hover:text-gray-200 hover:cursor-pointer"
+          >
+            &times;
+          </button>
 
-                        <img
+          <img
                             :src="
                                 selectedPet.pet_profile_path
                                     ? `/storage/${selectedPet.pet_profile_path}`
                                     : '/images/LRM_20240517_192913-01.jpeg'
                             "
                             :alt="selectedPet.name"
-                            class="w-full h-48 object-cover rounded-t-xl mb-4"
-                        />
+            class="w-full h-48 object-cover rounded-t-xl mb-4"
+          />
 
-                        <h2 class="text-2xl font-bold text-center mb-4">
+          <h2 class="text-2xl font-bold text-center mb-4">
                             <span class="text-primary">{{ selectedPet.name }}</span>
-                        </h2>
+          </h2>
 
-                        <div class="p-2 grid grid-cols-2 gap-4 text-sm">
+          <div class="p-2 grid grid-cols-2 gap-4 text-sm">
                             <p>
                                 Breed:
                                 <span class="text-primary">{{
@@ -132,48 +132,48 @@ const deletePet = (id, name) => {
                                     selectedPet.spayed_neutered ? "Yes" : "No"
                                 }}</span>
                             </p>
-                        </div>
+          </div>
 
-                        <div class="p-2">
-                            <p class="mt-3">Description:</p>
+          <div class="p-2">
+            <p class="mt-3">Description:</p>
                             <p
                                 class="border p-2 rounded bg-gray-50 text-sm break-words max-h-40 overflow-auto"
                             >
                                 {{ selectedPet.description }}
-                            </p>
-                        </div>
+            </p>
+          </div>
 
-                        <div class="flex justify-between p-2 w-full">
-                            <Link
+          <div class="flex justify-between p-2 w-full">
+            <Link
                                 v-if="isShelterOrAdmin"
                                 :href="`/pets/${selectedPet.id}/edit`"
-                                class="bg-primary text-white px-4 py-2 rounded hover:bg-white hover:text-primary hover:scale-105 border border-primary transition-all"
-                            >
-                                Edit
-                            </Link>
+              class="bg-primary text-white px-4 py-2 rounded hover:bg-white hover:text-primary hover:scale-105 border border-primary transition-all"
+            >
+              Edit
+            </Link>
 
-                            <button
+            <button
                                 v-if="isShelterOrAdmin"
                                 @click="deletePet(selectedPet.id, selectedPet.name)"
-                                class="bg-red-500 text-white px-4 py-2 rounded hover:bg-white hover:text-secondary border hover:border-secondary hover:scale-105 transition-all"
-                            >
-                                Delete
-                            </button>
-                        </div>
+              class="bg-red-500 text-white px-4 py-2 rounded hover:bg-white hover:text-secondary border hover:border-secondary hover:scale-105 transition-all"
+            >
+              Delete
+            </button>
+          </div>
 
-                        <div class="flex p-2 w-full">
-                            <Link
+          <div class="flex p-2 w-full">
+            <Link
                                 v-if="!user || isAdopter"
                                 :href="`/adopt/apply/${selectedPet.id}`"
                                 class="w-full px-4 py-2 bg-primary text-white text-sm font-semibold rounded-md hover:bg-white hover:text-primary border hover:border-primary transition duration-300 text-center"
-                            >
-                                Adopt Now
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            >
+              Adopt Now
+            </Link>
+          </div>
         </div>
+      </div>
+    </div>
+  </div>
     </AppLayout>
 </template>
 

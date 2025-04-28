@@ -1,4 +1,6 @@
 <template>
+    <Head title="Adoption Log" />
+
     <AppLayout>
         <div class="container mx-auto max-w-5xl bg-white mt-6 border border-primary rounded-lg shadow-md overflow-y-auto h-[80vh] p-6">
     <div class="relative w-full">
@@ -36,10 +38,10 @@
                   'text-yellow-400': adoption.status === 'pending'
                 }"
               >
-                {{ capitalize(adoption.status) }}
+                {{ adoption.status.charAt(0).toUpperCase() + adoption.status.slice(1) }}
               </td>
               <td class="border p-3 text-center">
-                <template v-if="userId === adoption.user_id && adoption.status === 'pending'">
+                <template v-if="$page.props.auth.user.id === adoption.user_id && adoption.status === 'pending'">
                   <Link
                     :href="route('adopt.edit', adoption.id)"
                     class="bg-primary text-white py-2 px-4 mx-4 rounded-md hover:bg-white hover:text-primary border-1 border-primary transition-all ease-in-out duration-300"
@@ -47,7 +49,7 @@
                     Edit
                   </Link>
                   <form
-                    @submit.prevent="deleteAdoption(adoption.id)"
+                    @submit.prevent="form.delete(route('adopt.destroy', adoption.id))"
                     class="inline"
                   >
                     <button
@@ -58,9 +60,7 @@
                     </button>
                   </form>
                 </template>
-                <template v-else>
-                  <span class="text-gray-500">No actions available</span>
-                </template>
+                <span v-else class="text-gray-500">No actions available</span>
               </td>
             </tr>
           </tbody>
@@ -72,21 +72,16 @@
 </template>
 
 <script setup>
-import { usePage, router, Link } from '@inertiajs/vue3';
-import AppLayout from '../../Layouts/AppLayout.vue';
+import { Head } from '@inertiajs/vue3'
+import { Link } from '@inertiajs/vue3'
+import { usePage } from '@inertiajs/vue3'
+import AppLayout from '../../Layouts/AppLayout.vue'
 
-const page = usePage();
-const adoptions = page.props.adoptions || [];
-const userId = page.props.auth?.user?.id || null;
+const page = usePage()
+const adoptions = page.props.adoptions || []
 
 function capitalize(str) {
-  if (!str) return '';
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-function deleteAdoption(id) {
-  if (confirm('Are you sure you want to delete this adoption request?')) {
-    router.delete(route('adopt.destroy', id));
-  }
+  if (!str) return ''
+  return str.charAt(0).toUpperCase() + str.slice(1)
 }
 </script>

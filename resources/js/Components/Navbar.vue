@@ -5,7 +5,7 @@
         <div>
             <Link
                 href="/"
-                class="flex flex-col text-3xl text-white hover-underline"
+                class="flex flex-col text-3xl text-white hover-underline hover:scale-115 transition-all duration-300 ease-in-out"
             >
                 PetPal <span class="text-sm">Find.Love.Adopt</span>
             </Link>

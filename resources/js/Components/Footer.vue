@@ -1,6 +1,6 @@
 <template>
     <footer class="bg-green-100 shadow-inner mt-12">
-      <div class="max-w-7xl mx-auhref px-6 py-12">
+      <div class="max-w-7xl mx-auto px-6 py-12">
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
           <div>
             <Link
@@ -59,11 +59,11 @@
           </div>
         </div>
   
-        <div class="border-t border-gray-200 mt-10 pt-6 text-center">
-          <a href="/" class="text-sm text-gray-500">
-            &copy; <span>{{ currentYear }}</span> 
-            <span class="hover-underline-hyperlink cursor-pointer">PetPal.</span> All Rights Reserved.
-          </a>
+        <div class="border-t border-gray-200 mt-10 pt-6">
+          <p class="text-center text-gray-500">
+            &copy; <span>{{ currentYear }}</span>
+            <a href="/" class="text-gray-500 hover-underline-hyperlink mx-1">PetPal.</a>All Rights Reserved.
+          </p>
         </div>
       </div>
     </footer>
