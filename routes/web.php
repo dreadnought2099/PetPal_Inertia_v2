@@ -78,12 +78,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Shelter & Administrator
     Route::middleware(['role:Shelter|Administrator'])->group(function () {
-
-        Route::get('/pets/create', [PetController::class,  'create'])->name('pets.create');
-        Route::post('/pets', [PetController::class, 'store'])->name('pets.store');
-        Route::get('/pets/{id}/edit', [PetController::class, 'edit'])->name('pets.edit');
-        Route::put('/pets/{id}', [PetController::class, 'update'])->name('pets.update');
-        Route::delete('/pets/{pet}', [PetController::class, 'destroy'])->name('pets.destroy');
+        Route::resource('pets', PetController::class)->except(['index', 'show']);
+        Route::post('/pets/{id}', [PetController::class, 'update']);
 
         // Adoption Request Management
         Route::patch('/adopt/{adoption}/approve', [AdoptionController::class, 'approve'])->name('adopt.approve');

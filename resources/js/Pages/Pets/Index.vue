@@ -1,15 +1,20 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { usePage, router, Link } from "@inertiajs/vue3";
 import AppLayout from "../../Layouts/AppLayout.vue";
 import PetCard from "@/Components/PetCard.vue";
 
 const pets = usePage().props.pets || [];
-const selectedPetId = ref(null);
+const selectedPet = ref(null);
 
-const showPetModal = (id) => {
-    selectedPetId.value = selectedPetId.value === id ? null : id;
-};
+const user = usePage().props.auth?.user || null;
+const roles = user?.roles || [];
+const isAdopter = roles.includes('Adopter');
+const isShelterOrAdmin = roles.includes('Shelter') || roles.includes('Administrator');
+
+function showPetModal(pet) {
+    selectedPet.value = pet;
+}
 
 const deletePet = (id, name) => {
     if (confirm(`Are you sure you want to delete pet ${name}?`)) {
@@ -35,8 +40,8 @@ const deletePet = (id, name) => {
                     v-for="pet in pets"
                     :key="pet.id"
                     :pet="pet"
-                    @see-more="() => showPetModal(pet.id)"
-                    @card-click="() => showPetModal(pet.id)"
+                    @see-more="showPetModal"
+                    @card-click="showPetModal"
                 />
             </div>
             <div
@@ -56,17 +61,16 @@ const deletePet = (id, name) => {
             </div>
 
             <!-- Modals -->
-            <div v-for="pet in pets" :key="`modal-${pet.id}`">
+            <div v-if="selectedPet">
                 <div
-                    v-if="selectedPetId === pet.id"
-                    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
-                    @click.self="showPetModal(pet.id)"
+                    class="modal fixed inset-0 flex items-center justify-center z-50"
+                    @click.self="selectedPet = null"
                 >
                     <div
                         class="bg-white flex relative flex-col rounded-xl w-100 max-w-md mx-2"
                     >
                         <button
-                            @click="showPetModal(pet.id)"
+                            @click="selectedPet = null"
                             title="Click to close the modal"
                             class="flex absolute right-3 text-red-500 text-4xl hover:text-gray-200 hover:cursor-pointer"
                         >
@@ -75,57 +79,57 @@ const deletePet = (id, name) => {
 
                         <img
                             :src="
-                                pet.pet_profile_path
-                                    ? `/storage/${pet.pet_profile_path}`
+                                selectedPet.pet_profile_path
+                                    ? `/storage/${selectedPet.pet_profile_path}`
                                     : '/images/LRM_20240517_192913-01.jpeg'
                             "
-                            :alt="pet.name"
+                            :alt="selectedPet.name"
                             class="w-full h-48 object-cover rounded-t-xl mb-4"
                         />
 
                         <h2 class="text-2xl font-bold text-center mb-4">
-                            <span class="text-primary">{{ pet.name }}</span>
+                            <span class="text-primary">{{ selectedPet.name }}</span>
                         </h2>
 
                         <div class="p-2 grid grid-cols-2 gap-4 text-sm">
                             <p>
                                 Breed:
                                 <span class="text-primary">{{
-                                    pet.breed
+                                    selectedPet.breed
                                 }}</span>
                             </p>
                             <p>
                                 Age:
                                 <span class="text-primary"
-                                    >{{ pet.age }} year/s</span
+                                    >{{ selectedPet.age }} year/s</span
                                 >
                             </p>
                             <p>
                                 Sex:
-                                <span class="text-primary">{{ pet.sex }}</span>
+                                <span class="text-primary">{{ selectedPet.sex }}</span>
                             </p>
                             <p>
                                 Species:
                                 <span class="text-primary">{{
-                                    pet.species_text
+                                    selectedPet.species_text
                                 }}</span>
                             </p>
                             <p>
                                 Allergies:
                                 <span class="text-primary">{{
-                                    pet.allergies
+                                    selectedPet.allergies
                                 }}</span>
                             </p>
                             <p>
                                 Vaccination:
                                 <span class="text-primary">{{
-                                    pet.vaccination_text
+                                    selectedPet.vaccination_text
                                 }}</span>
                             </p>
                             <p>
                                 Spayed/Neutered:
                                 <span class="text-primary">{{
-                                    pet.spayed_neutered ? "Yes" : "No"
+                                    selectedPet.spayed_neutered ? "Yes" : "No"
                                 }}</span>
                             </p>
                         </div>
@@ -135,30 +139,22 @@ const deletePet = (id, name) => {
                             <p
                                 class="border p-2 rounded bg-gray-50 text-sm break-words max-h-40 overflow-auto"
                             >
-                                {{ pet.description }}
+                                {{ selectedPet.description }}
                             </p>
                         </div>
 
                         <div class="flex justify-between p-2 w-full">
                             <Link
-                                v-if="
-                                    $page.props.auth?.user?.can?.[
-                                        'edit pet listing'
-                                    ]
-                                "
-                                :href="`/pets/${pet.id}/edit`"
+                                v-if="isShelterOrAdmin"
+                                :href="`/pets/${selectedPet.id}/edit`"
                                 class="bg-primary text-white px-4 py-2 rounded hover:bg-white hover:text-primary hover:scale-105 border border-primary transition-all"
                             >
                                 Edit
                             </Link>
 
                             <button
-                                v-if="
-                                    $page.props.auth?.user?.can?.[
-                                        'delete pet listing'
-                                    ]
-                                "
-                                @click="deletePet(pet.id, pet.name)"
+                                v-if="isShelterOrAdmin"
+                                @click="deletePet(selectedPet.id, selectedPet.name)"
                                 class="bg-red-500 text-white px-4 py-2 rounded hover:bg-white hover:text-secondary border hover:border-secondary hover:scale-105 transition-all"
                             >
                                 Delete
@@ -167,13 +163,8 @@ const deletePet = (id, name) => {
 
                         <div class="flex p-2 w-full">
                             <Link
-                                v-if="
-                                    !$page.props.auth?.user ||
-                                    $page.props.auth?.user?.roles.includes(
-                                        'Adopter'
-                                    )
-                                "
-                                :href="`/adopt/apply/${pet.id}`"
+                                v-if="!user || isAdopter"
+                                :href="`/adopt/apply/${selectedPet.id}`"
                                 class="w-full px-4 py-2 bg-primary text-white text-sm font-semibold rounded-md hover:bg-white hover:text-primary border hover:border-primary transition duration-300 text-center"
                             >
                                 Adopt Now
@@ -185,3 +176,9 @@ const deletePet = (id, name) => {
         </div>
     </AppLayout>
 </template>
+
+<style scoped>
+.modal {
+    background-color: rgba(0, 0, 0, 0.4);
+}
+</style>

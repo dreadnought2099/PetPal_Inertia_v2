@@ -8,17 +8,30 @@ use Illuminate\Support\Str;
 use App\Models\Pet;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class PetController extends Controller
 {
     public function index()
     {
-        $pets = Pet::all();
+        $pets = Pet::all()->map(function ($pet) {
+            $pet->species_text = $pet->species_text;
+            $pet->vaccination_text = $pet->vaccination_text;
+            return $pet;
+        });
 
-        // Return the Inertia response with a Vue component and the pets data as props
+        $user = Auth::user();
+
         return Inertia::render('Pets/Index', [
-            'pets' => $pets
+            'pets' => $pets,
+            'auth' => [
+                'user' => $user ? [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'roles' => $user->roles->pluck('name')->toArray(),
+                ] : null,
+            ],
         ]);
     }
 
@@ -46,9 +59,9 @@ class PetController extends Controller
             ]);
 
             // Explicitly cast species, vaccination, spayed_neutered to integers
+            $validated['species'] = (int) $request->input('species');
+            $validated['vaccination'] = (int) $request->input('vaccination');
             $validated['spayed_neutered'] = (bool) $request->input('spayed_neutered');
-            $validated['species'] = (int) $validated['species'];
-            $validated['vaccination'] = (int) $validated['vaccination'];
         } catch (Exception $e) {
             return redirect()->route('pets.index')->with('error', 'Validation failed.');
         }
@@ -93,6 +106,12 @@ class PetController extends Controller
 
     public function update(Request $request, $id)
     {
+        Log::info('Pet update request', [
+            'method' => $request->method(),
+            'url' => $request->fullUrl(),
+            'all' => $request->all(),
+            'files' => $request->files->all(),
+        ]);
         $pet = Pet::findOrFail($id);
 
         // Check if the user has permission to edit the pet listing

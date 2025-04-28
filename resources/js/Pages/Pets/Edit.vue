@@ -1,8 +1,11 @@
 <template>
-  <div class="container mx-auto max-w-5xl bg-white mt-4 border border-primary rounded-lg shadow-md overflow-y-auto h-[80vh]">
-    <h2 class="flex gap-1 sticky top-0 py-2 px-4 text-2xl font-bold bg-white z-10 justify-center">
-      Edit Pet <span class="text-primary">Listing</span>
+  <AppLayout>
+    <div class="container mx-auto max-w-5xl bg-white mt-4 border border-primary rounded-lg shadow-md overflow-y-auto h-[80vh]">
+      <h2 class="flex gap-1 sticky top-0 py-2 px-4 text-2xl font-bold bg-white z-10 justify-center">
+        Edit Pet <span class="text-primary">Listing</span>
     </h2>
+
+    <!-- <pre>{{ form }}</pre> -->
 
     <form @submit.prevent="submit" enctype="multipart/form-data" class="px-8 pt-6 pb-8 space-y-6">
       <!-- Profile Image -->
@@ -122,7 +125,7 @@
           false-value="0"
           class="mt-1 p-2 border border-gray-300 rounded-md"
         />
-        <span class="ml-2">{{ form.spayed_neutered === '1' ? 'Yes' : 'No' }}</span>
+        <span class="ml-2">{{ form.spayed_neutered == 1 ? 'Yes' : 'No' }}</span>
         <p v-if="form.errors.spayed_neutered" class="text-red-500 text-xs mt-1">{{ form.errors.spayed_neutered }}</p>
       </div>
 
@@ -168,12 +171,14 @@
           Cancel
         </button>
       </div>
-    </form>
-  </div>
+            </form>
+        </div>
+    </AppLayout>
 </template>
 
 <script setup>
 import { useForm, usePage } from '@inertiajs/vue3';
+import AppLayout from '../../Layouts/AppLayout.vue';
 
 const pet = usePage().props.pet;
 
@@ -183,15 +188,19 @@ const form = useForm({
   age: pet.age,
   breed: pet.breed,
   sex: pet.sex,
-  species: String(pet.species),
-  vaccination: String(pet.vaccination),
-  spayed_neutered: pet.spayed_neutered ? '1' : '0',
+  species: pet.species !== undefined ? String(pet.species) : '0',
+  vaccination: pet.vaccination !== undefined ? String(pet.vaccination) : '0',
+  spayed_neutered: pet.spayed_neutered ? 1 : 0,
   allergies: pet.allergies,
   description: pet.description,
 });
 
 function submit() {
-  form.post(route('pets.update', pet.id), {
+  form.species = Number(form.species);
+  form.vaccination = Number(form.vaccination);
+  form.spayed_neutered = Number(form.spayed_neutered);
+
+  form.post(`/pets/${pet.id}`, {
     method: 'put',
     forceFormData: true,
     onSuccess: () => form.reset('profile'),

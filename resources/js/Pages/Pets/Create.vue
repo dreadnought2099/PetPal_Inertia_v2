@@ -98,7 +98,7 @@
                         <option
                             v-for="(label, value) in select.options"
                             :key="value"
-                            :value="value"
+                            :value="Number(value)"
                         >
                             {{ label }}
                         </option>
@@ -206,12 +206,14 @@ const form = useForm({
     description: "",
     profile: null,
     sex: "",
-    species: "",
-    vaccination: "",
+    species: null,
+    vaccination: null,
     spayed_neutered: "",
 });
 
 function submit() {
+    form.species = Number(form.species);
+    form.vaccination = Number(form.vaccination);
     form.post('/pets', {
         forceFormData: true,
         onSuccess: () => form.reset("profile"),
