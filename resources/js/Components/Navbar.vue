@@ -54,10 +54,18 @@
                         </svg>
                     </button>
 
+                    <!-- Overlay for click-away -->
                     <div
                         v-if="dropdownOpen"
-                        @click.away="dropdownOpen = false"
-                        class="absolute right-0 mt-2 w-44 bg-white border border-gray-300 shadow-lg rounded-lg z-10"
+                        class="fixed inset-0 z-10"
+                        @click="dropdownOpen = false"
+                    ></div>
+
+                    <!-- Dropdown menu -->
+                    <div
+                        v-if="dropdownOpen"
+                        class="absolute right-0 mt-2 w-44 bg-white border border-gray-300 shadow-lg rounded-lg z-20"
+                        @click.stop
                     >
                         <ul class="py-2">
                             <li>

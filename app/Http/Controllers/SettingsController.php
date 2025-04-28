@@ -13,7 +13,13 @@ class SettingsController extends Controller
 
         $user = Auth::user();
         return Inertia::render('Settings/Index', [
-            'user' => $user,
+            'user' => $user ? [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'created_at' => $user->created_at,
+                'roles' => $user->roles->pluck('name')->toArray(),
+            ] : null,
         ]);
     }
 }

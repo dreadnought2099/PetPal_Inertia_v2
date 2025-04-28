@@ -12,7 +12,13 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
         return Inertia::render('Profile/Index', [
-            'user' => $user,
+            'user' => $user ? [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'created_at' => $user->created_at,
+                'roles' => $user->roles->pluck('name')->toArray(),
+            ] : null,
         ]);
     }
 }
