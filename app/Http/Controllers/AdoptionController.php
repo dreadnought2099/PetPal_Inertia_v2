@@ -32,7 +32,7 @@ class AdoptionController extends Controller
     public function create($pet = null): Response
     {
         $user = Auth::user();
-        
+
         // Get all available and pending pets
         $pets = Pet::whereIn('status', [Pet::STATUS_AVAILABLE, Pet::STATUS_PENDING])->get();
 
@@ -82,7 +82,7 @@ class AdoptionController extends Controller
                 ->first();
 
             if ($existingRequest) {
-                $message = match($existingRequest->status) {
+                $message = match ($existingRequest->status) {
                     Adoption::STATUS_PENDING => 'You already have a pending adoption request for this pet.',
                     Adoption::STATUS_APPROVED => 'You have already adopted this pet.',
                     default => 'You already have an active adoption request for this pet.'
@@ -121,7 +121,6 @@ class AdoptionController extends Controller
 
             return redirect()->route('adopt.log')
                 ->with('success', 'Your adoption request has been submitted successfully! We will review your application and get back to you soon.');
-
         } catch (\Illuminate\Database\QueryException $e) {
             Log::error('Database error during adoption request:', [
                 'error' => $e->getMessage(),
@@ -257,6 +256,9 @@ class AdoptionController extends Controller
 
     public function reject(Adoption $adoption)
     {
+
+        $adoption->load('pet');
+
         $adoption->update(['status' => Adoption::STATUS_REJECTED]);
         $adoption->pet->update(['status' => Pet::STATUS_AVAILABLE]);
         return redirect()->back()->with('success', 'Adoption request rejected successfully.');
