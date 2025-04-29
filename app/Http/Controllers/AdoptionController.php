@@ -271,8 +271,20 @@ class AdoptionController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
+        $user = Auth::user();
+        $roles = $user->roles->pluck('name')->toArray();
+        $isAdmin = in_array('Administrator', $roles);
+        $isShelter = in_array('Shelter', $roles);
+
         return Inertia::render('Adoptions/Log', [
-            'adoptions' => $adoptions
+            'adoptions' => $adoptions,
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'isAdmin' => $isAdmin,
+                'isShelter' => $isShelter
+            ]
         ]);
     }
 

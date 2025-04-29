@@ -25,7 +25,7 @@
                         <option value="all">All</option>
                         <option value="pending">Pending</option>
                         <option value="approved">Approved</option>
-                        <option value="declined">Declined</option>
+                        <option value="rejected">Rejected</option>
                     </select>
                 </div>
 
@@ -146,7 +146,7 @@ const page = usePage();
 const adoptions = page.props.adoptions || [];
 const authUser = page.props.auth?.user || null;
 const form = useForm({});
-const selectedFilter = ref("pending"); // Default filter set to pending
+const selectedFilter = ref("all"); // Default filter set to all
 
 // Computed property to filter adoptions based on selected status
 const filteredAdoptions = computed(() => {
@@ -164,22 +164,27 @@ function capitalize(str) {
 // Function to determine the color class for status
 function statusColor(status) {
     const lowerStatus = status.toLowerCase();
-    return lowerStatus === "pending"
-        ? "text-yellow-400"
-        : lowerStatus === "approved"
-        ? "text-green-500"
-        : lowerStatus === "declined"
-        ? "text-red-500"
-        : "";
+    switch (lowerStatus) {
+        case 'pending':
+            return 'text-yellow-400';
+        case 'approved':
+            return 'text-green-500';
+        case 'rejected':
+            return 'text-red-500';
+        case 'cancelled':
+            return 'text-gray-500';
+        case 'archived':
+            return 'text-gray-400';
+        default:
+            return '';
+    }
 }
 
 // Check if user can manage adoption (edit/delete)
 function canManageAdoption(adoption) {
     if (!authUser) return false;
     const isOwner = authUser.id === adoption.user_id;
-    const isAdminOrShelter = authUser.roles?.some(
-        (role) => role.name === "Administrator" || role.name === "Shelter"
-    );
+    const isAdminOrShelter = authUser.isAdmin || authUser.isShelter;
     return isOwner || isAdminOrShelter;
 }
 
