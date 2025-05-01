@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import { usePage, router, Link } from "@inertiajs/vue3";
 import AppLayout from "../../Layouts/AppLayout.vue";
 import PetCard from "@/Components/PetCard.vue";

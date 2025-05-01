@@ -168,7 +168,12 @@ function confirmDelete(user) {
     showModal(
         `Are you sure you want to delete <span style="color: #49b451;">${user.name}</span>?`,
         () => {
-            router.delete(route("admin.deleteUser", user.id));
+            router.delete(`/admin/users/${user.id}`, {
+                preserveScroll: true,
+                onSuccess: () => {
+                    router.visit('/admin/users', { preserveScroll: true });
+                }
+            });
         }
     );
 }
@@ -183,7 +188,7 @@ function confirmRoleChange(user) {
             selectedRole
         )}</span>?`,
         () => {
-            router.post(route("admin.changeRole", user.id), {
+            router.post(`/admin/users/${user.id}/role`, {
                 role: selectedRole,
             });
         }

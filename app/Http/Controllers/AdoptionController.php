@@ -149,6 +149,7 @@ class AdoptionController extends Controller
         }
 
         $pets = Pet::all();
+        $adoption->load('pet');  // Eager load the pet relationship
 
         return Inertia::render('Adoptions/Edit', [
             'adoption' => $adoption,
@@ -213,38 +214,48 @@ class AdoptionController extends Controller
 
     public function destroy(Adoption $adoption)
     {
-        Log::info('Attempting to delete adoption request', [
-            'user_id' => Auth::id(),
-            'adoption_user_id' => $adoption->user_id,
-            'adoption_status' => $adoption->status,
-        ]);
+        $this->authorize('delete', $adoption);
 
-        if (Auth::id() !== $adoption->user_id) {
-            abort(403, 'Unauthorized: You are not the owner of this adoption request.');
-        }
-
-        if ($adoption->status !== Adoption::STATUS_PENDING) {
+        if ($adoption->status !== 'pending') {
             return back()->with('error', 'Only pending adoption requests can be deleted.');
         }
 
+        // Load the pet relationship
+        $adoption->load('pet');
+        
+        // Log current pet status and adoption details
+        Log::info('Before deletion:', [
+            'adoption_id' => $adoption->id,
+            'pet_id' => $adoption->pet_id,
+            'pet_status' => $adoption->pet->status,
+            'adoption_status' => $adoption->status
+        ]);
+        
         // Update pet status back to available
-        $pet = $adoption->pet;
-        $pet->update(['status' => Pet::STATUS_AVAILABLE]);
+        $adoption->pet->update(['status' => 'available']);
+        
+        // Log updated pet status
+        Log::info('After pet status update:', [
+            'pet_id' => $adoption->pet_id,
+            'new_status' => $adoption->pet->fresh()->status
+        ]);
+        
+        $adoption->delete();
 
-        if (method_exists($adoption, 'forceDelete')) {
-            $adoption->forceDelete();
-        } else {
-            $adoption->delete();
+        return redirect()->route('adopt.log')->with('success', 'Adoption request deleted successfully.');
+    }
+
+    public function cancel(Adoption $adoption)
+    {
+        $this->authorize('update', $adoption);
+
+        if ($adoption->status !== 'pending') {
+            return back()->with('error', 'Only pending adoption requests can be cancelled.');
         }
 
-        Log::info("Adoption request with ID {$adoption->id} deleted successfully", [
-            'deleted_by' => Auth::id(),
-            'adoption_id' => $adoption->id,
-            'pet_id' => $pet->id,
-            'pet_new_status' => Pet::STATUS_AVAILABLE
-        ]);
+        $adoption->update(['status' => 'cancelled']);
 
-        return back()->with('success', "Adoption request with ID {$adoption->id} deleted successfully.");
+        return redirect()->route('adopt.log')->with('success', 'Adoption request cancelled successfully.');
     }
 
     public function approve(Adoption $adoption)
@@ -273,17 +284,16 @@ class AdoptionController extends Controller
 
         $user = Auth::user();
         $roles = $user->roles->pluck('name')->toArray();
-        $isAdmin = in_array('Administrator', $roles);
-        $isShelter = in_array('Shelter', $roles);
 
         return Inertia::render('Adoptions/Log', [
             'adoptions' => $adoptions,
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'isAdmin' => $isAdmin,
-                'isShelter' => $isShelter
+            'auth' => [
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'roles' => $user->roles
+                ]
             ]
         ]);
     }

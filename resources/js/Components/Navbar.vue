@@ -12,15 +12,13 @@
         </div>
 
         <div class="flex items-center space-x-6 text-lg font-bold">
-            <Link href="/" class="hover-underline">Home</Link>
-            <Link href="/pets" class="hover-underline">Our Pets</Link>
+            <Link href="/" class="hover-underline" title="Go Home">Home</Link>
+            <Link href="/pets" class="hover-underline" title="Available pet listings">Our Pets</Link>
 
             <!-- Shelter/Admin Links -->
             <template v-if="isShelterOrAdmin">
-                <Link href="/pets/create" class="hover-underline">Add Pet</Link>
-                <Link href="/adopt/pending" class="hover-underline"
-                    >Pending Requests</Link
-                >
+                <Link href="/pets/create" class="hover-underline" title="Add pet listing">Add Pet</Link>
+                <Link href="/adopt/pending" class="hover-underline" title="View available pending requests">Pending Requests</Link>
             </template>
 
             <!-- Adopter Link -->
@@ -71,28 +69,28 @@
                             <li>
                                 <Link
                                     href="/profile"
-                                    class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                                    class="block px-4 py-2 text-gray-700 hover:bg-gray-100" title="See Profile"
                                     >Profile</Link
                                 >
                             </li>
                             <li v-if="isAdopter">
                                 <Link
                                     href="/adopt/log"
-                                    class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                                    class="block px-4 py-2 text-gray-700 hover:bg-gray-100"  title="See Adoption History"
                                     >Adoption Log</Link
                                 >
                             </li>
                             <li v-if="isAdmin">
                                 <Link
                                     href="/admin/users"
-                                    class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                                    class="block px-4 py-2 text-gray-700 hover:bg-gray-100" title="Manage Users"
                                     >Dashboard</Link
                                 >
                             </li>
                             <li>
                                 <Link
                                     href="/settings"
-                                    class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                                    class="block px-4 py-2 text-gray-700 hover:bg-gray-100" title="Go to Settings"
                                     >Settings</Link
                                 >
                             </li>
@@ -100,7 +98,7 @@
                                 <form @submit.prevent="logout">
                                     <button
                                         type="submit"
-                                        class="w-full text-left px-4 py-2 text-primary hover:bg-gray-100 cursor-pointer"
+                                        class="w-full text-left px-4 py-2 text-primary hover:bg-gray-100 cursor-pointer" title="Click to Logout"
                                     >
                                         Logout
                                     </button>

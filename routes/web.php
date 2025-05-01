@@ -95,6 +95,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/adopt/log', [AdoptionController::class, 'adoptionLog'])->name('adopt.log');
         Route::put('/adopt/{adoption}', [AdoptionController::class, 'update'])->name('adopt.update');
         Route::get('/adopt/{adoption}/edit', [AdoptionController::class, 'edit'])->name('adopt.edit');
+        Route::patch('/adopt/{adoption}/cancel', [AdoptionController::class, 'cancel'])->name('adopt.cancel');
         Route::delete('/adopt/{adoption}', [AdoptionController::class, 'destroy'])->name('adopt.destroy');
     });
 });

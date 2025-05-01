@@ -13,14 +13,14 @@
                 </h2>
 
                 <!-- Dropdown Filter -->
-                <div class="mb-4 text-center flex justify-start">
+                <div class="mb-4 mt-10 text-center flex justify-start">
                     <label for="statusFilter" class="mr-2 text-lg font-semibold"
                         >Filter by Status:</label
                     >
                     <select
                         v-model="selectedFilter"
                         id="statusFilter"
-                        class="px-2 py-2 border rounded"
+                        class="px-2 border rounded"
                     >
                         <option value="all">All</option>
                         <option value="pending">Pending</option>
@@ -31,9 +31,9 @@
 
                 <div
                     v-if="filteredAdoptions.length === 0"
-                    class="text-center py-8"
+                    class="text-center"
                 >
-                    <p class="text-gray-500 text-lg">
+                    <p class="text-gray-400 text-1xl">
                         No adoption requests found for the selected status.
                     </p>
                 </div>
@@ -183,9 +183,21 @@ function statusColor(status) {
 // Check if user can manage adoption (edit/delete)
 function canManageAdoption(adoption) {
     if (!authUser) return false;
+    
     const isOwner = authUser.id === adoption.user_id;
-    const isAdminOrShelter = authUser.isAdmin || authUser.isShelter;
-    return isOwner || isAdminOrShelter;
+    const isAdminOrShelter = authUser.roles?.some(
+        (role) => role.name === "Administrator" || role.name === "Shelter"
+    );
+    
+    // If user is admin or shelter, they can manage any request
+    if (isAdminOrShelter) return true;
+    
+    // If user is owner, they can only manage if status is pending
+    if (isOwner) {
+        return adoption.status.toLowerCase() === 'pending';
+    }
+    
+    return false;
 }
 
 // Prevent deleting approved adoptions
@@ -196,7 +208,12 @@ function deleteAdoption(id, status) {
     }
 
     if (confirm("Are you sure you want to delete this adoption request?")) {
-        form.delete(`/adopt/${id}`, { preserveScroll: true });
+        form.delete(`/adopt/${id}`, {
+            preserveScroll: false,
+            onSuccess: () => {
+                window.location.reload();
+            }
+        });
     }
 }
 </script>
