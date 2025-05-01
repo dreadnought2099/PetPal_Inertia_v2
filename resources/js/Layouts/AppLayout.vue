@@ -1,5 +1,5 @@
 <template>
-    <div class="min-h-screen bg-gray-100">
+    <div class="min-h-screen bg-gray-100 flex flex-col">
         <!-- Flash Messages Container -->
         <div id="success-message-container" class="absolute top-24 right-4 z-100">
             <FlashMessage 
@@ -31,7 +31,7 @@
 
         <Navbar />
 
-        <main class="py-6">
+        <main class="py-6 flex-grow">
             <slot />
         </main>
         <Footer />

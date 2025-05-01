@@ -159,58 +159,36 @@ class AdoptionController extends Controller
 
     public function update(Request $request, Adoption $adoption)
     {
-        if (Auth::id() !== $adoption->user_id || $adoption->status !== Adoption::STATUS_PENDING) {
-            abort(403, 'Unauthorized action.');
-        }
-
+    
         $validated = $request->validate([
             'pet_id' => 'required|exists:pets,id',
             'last_name' => 'required|string|max:255',
             'first_name' => 'required|string|max:255',
             'middle_name' => 'nullable|string|max:255',
-            'address' => 'required|string',
+            'address' => 'required|string|max:255',
             'contact_number' => 'required|string|max:20',
-            'dob' => 'required|date|before_or_equal:' . now()->subYears(18)->toDateString(),
-            'valid_id' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:51200',
-            'valid_id_back' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:51200',
+            'dob' => 'required|date',
             'previous_experience' => 'required|in:yes,no',
             'other_pets' => 'required|in:yes,no',
             'financial_preparedness' => 'required|in:yes,no',
-        ], [
-            'dob.before_or_equal' => 'You must be atleast 18 years old to apply for an adoption.',
-            'dob.required' => 'Date of birth is required.',
-            'dob.date' => 'Please enter a valid date.',
+            'valid_id' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:51200',
+            'valid_id_back' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:51200',
         ]);
-
+    
+        // Handle file uploads
         if ($request->hasFile('valid_id')) {
-            if ($adoption->valid_id) {
-                Storage::disk('public')->delete($adoption->valid_id);
-            }
-            $validated['valid_id'] = $request->file('valid_id')->store('adoption/valid_ids', 'public');
+            $validated['valid_id'] = $request->file('valid_id')->store('valid_ids', 'public');
         }
-
+    
         if ($request->hasFile('valid_id_back')) {
-            if ($adoption->valid_id_back) {
-                Storage::disk('public')->delete($adoption->valid_id_back);
-            }
-            $validated['valid_id_back'] = $request->file('valid_id_back')->store('adoption/valid_ids', 'public');
+            $validated['valid_id_back'] = $request->file('valid_id_back')->store('valid_ids', 'public');
         }
-
-        DB::transaction(function () use ($adoption, $validated) {
-            if ($adoption->pet_id != $validated['pet_id']) {
-                $adoption->pet->update(['status' => Pet::STATUS_AVAILABLE]);
-                $newPet = Pet::findOrFail($validated['pet_id']);
-                $newPet->update(['status' => Pet::STATUS_PENDING]);
-            }
-
-            $adoption->fill($validated);
-            if ($adoption->isDirty()) {
-                $adoption->save();
-            }
-        });
-
-        return to_route('adopt.log')->with('success', "Adoption request with ID {$adoption->id} updated successfully.");
+    
+        $adoption->update($validated);
+        
+        return redirect()->route('adopt.log')->with('success', "Adoption request with ID {$adoption->id} updated successfully.");
     }
+    
 
     public function destroy(Adoption $adoption)
     {
