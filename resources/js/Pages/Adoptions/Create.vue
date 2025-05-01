@@ -54,8 +54,7 @@ function submit() {
         <span class="text-primary"> Adoption</span>
       </h1>
 
-      <!-- Flash Messages -->
-      <FlashMessage
+      <!-- <FlashMessage
         v-if="flash.success"
         type="success"
         :message="flash.success"
@@ -65,7 +64,7 @@ function submit() {
         v-if="flash.error"
         type="error"
         :message="flash.error"
-      />
+      /> -->
 
       <!-- Form Errors -->
       <div v-if="Object.keys(errors).length" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative m-4" role="alert">
@@ -82,8 +81,8 @@ function submit() {
           <label class="font-semibold">Select Pet</label>
           <select v-model="form.pet_id" class="w-full border p-2 rounded mt-2" required>
             <option value="" disabled>Choose a pet</option>
-            <option v-for="pet in pets" :key="pet.id" :value="pet.id" :disabled="pet.status === 'adopted'">
-              {{ pet.name }} - {{ pet.breed }}
+            <option v-for="pet in pets" :key="pet.id" :value="pet.id">
+              {{ pet.name }} - {{ pet.breed }} ({{ pet.status }})
             </option>
           </select>
         </div>

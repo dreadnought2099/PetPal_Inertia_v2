@@ -169,6 +169,7 @@ import { ref, reactive } from 'vue'
 import axios from 'axios'
 import { router } from '@inertiajs/vue3'
 import AppLayout from '../../Layouts/AppLayout.vue'
+import FlashMessage from '../../Components/FlashMessage.vue'
 
 const props = defineProps({
   adoption: Object,

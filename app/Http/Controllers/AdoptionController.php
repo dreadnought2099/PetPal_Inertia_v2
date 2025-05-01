@@ -71,23 +71,8 @@ class AdoptionController extends Controller
 
             $pet = Pet::findOrFail($validated['pet_id']);
 
-            if ($pet->status !== Pet::STATUS_AVAILABLE) {
-                return back()->with('error', 'This pet is no longer available for adoption.');
-            }
-
-            // Check for existing active adoption request
-            $existingRequest = Adoption::where('user_id', Auth::id())
-                ->where('pet_id', $pet->id)
-                ->whereIn('status', [Adoption::STATUS_PENDING, Adoption::STATUS_APPROVED])
-                ->first();
-
-            if ($existingRequest) {
-                $message = match ($existingRequest->status) {
-                    Adoption::STATUS_PENDING => 'You already have a pending adoption request for this pet.',
-                    Adoption::STATUS_APPROVED => 'You have already adopted this pet.',
-                    default => 'You already have an active adoption request for this pet.'
-                };
-                return back()->with('error', $message);
+            if ($pet->status === Pet::STATUS_ADOPTED) {
+                return back()->with('error', 'This pet has already been adopted.');
             }
 
             // Handle file uploads
@@ -116,8 +101,10 @@ class AdoptionController extends Controller
                 'status' => Adoption::STATUS_PENDING,
             ]);
 
-            // Update pet status
-            $pet->update(['status' => Pet::STATUS_PENDING]);
+            // Update pet status to pending if it's available
+            if ($pet->status === Pet::STATUS_AVAILABLE) {
+                $pet->update(['status' => Pet::STATUS_PENDING]);
+            }
 
             return redirect()->route('adopt.log')
                 ->with('success', 'Your adoption request has been submitted successfully! We will review your application and get back to you soon.');
@@ -126,10 +113,6 @@ class AdoptionController extends Controller
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
-
-            if (str_contains($e->getMessage(), 'Duplicate entry')) {
-                return back()->with('error', 'You already have an active adoption request for this pet.');
-            }
 
             return back()->with('error', 'An error occurred while processing your request. Please try again later.');
         } catch (\Exception $e) {
@@ -238,20 +221,46 @@ class AdoptionController extends Controller
 
     public function approve(Adoption $adoption)
     {
-        $adoption->update(['status' => Adoption::STATUS_APPROVED]);
-        $adoption->pet->update(['status' => Pet::STATUS_ADOPTED]);
-        return redirect()->back()->with('success', 'Adoption request approved successfully.');
+        $this->authorize('approve', $adoption);
+
+        DB::transaction(function () use ($adoption) {
+            // Update adoption status
+            $adoption->update(['status' => 'approved']);
+
+            // Update pet status
+            $adoption->pet->update(['status' => Pet::STATUS_ADOPTED]);
+
+            // Reject all other pending requests for this pet
+            Adoption::where('pet_id', $adoption->pet_id)
+                ->where('id', '!=', $adoption->id)
+                ->where('status', 'pending')
+                ->update(['status' => 'rejected']);
+        });
+
+        return back()->with('success', 'Adoption approved successfully!');
     }
 
     public function reject(Adoption $adoption)
     {
 
-        $adoption->load('pet');
+        $this->authorize('reject', $adoption);
 
-        $adoption->update(['status' => Adoption::STATUS_REJECTED]);
-        $adoption->pet->update(['status' => Pet::STATUS_AVAILABLE]);
-        return redirect()->back()->with('success', 'Adoption request rejected successfully.');
+        DB::transaction(function() use ($adoption) {
+            $adoption->update(['status' => 'rejected']);
+
+            // If this was the only pending request, make pet available again
+            $hasOtherPending = Adoption::where('pet_id', $adoption->pet_id)
+                ->where('status', 'pending')
+                ->exists();
+
+                if (!$hasOtherPending) {
+                    $adoption->pet->update(['status' => Pet::STATUS_AVAILABLE]);
+                }
+        });
+
+        return back()->with('success', 'Adoption request rejected.');
     }
+
 
     public function adoptionLog(): Response
     {

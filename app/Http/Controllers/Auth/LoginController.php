@@ -39,7 +39,8 @@ class LoginController extends Controller
         Mail::to($user->email)->queue(new WelcomeMail($user));
 
         // Return Inertia-compatible redirect
-        return redirect()->route('adopt.log')->with('success', "Adoption request with ID {$adoption->id} updated successfully.");
+        return redirect()->route('pets.index')->with('success', "Login successful! Welcome, {$user->name}.");
+
 
     }
 
