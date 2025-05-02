@@ -35,9 +35,18 @@ class AdoptionController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
+        $user = Auth::user();
+        $roles = $user ? $user->roles->pluck('name')->toArray() : [];
+
         return Inertia::render('Adoptions/Create', [
             'pets' => $pets,
-            'user' => Auth::user(),
+            'auth' => [
+                'user' => $user ? [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'roles' => $roles,
+                ] : null,
+            ],
         ]);
     }
 
@@ -267,17 +276,16 @@ class AdoptionController extends Controller
             ->get();
 
         $user = Auth::user();
-        $roles = $user->roles->pluck('name')->toArray();
+        $roles = $user ? $user->roles->pluck('name')->toArray() : [];
 
         return Inertia::render('Adoptions/Log', [
             'adoptions' => $adoptions,
             'auth' => [
-                'user' => [
+                'user' => $user ? [
                     'id' => $user->id,
                     'name' => $user->name,
-                    'email' => $user->email,
-                    'roles' => $user->roles
-                ]
+                    'roles' => $roles,
+                ] : null,
             ]
         ]);
     }

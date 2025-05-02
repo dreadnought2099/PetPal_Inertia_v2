@@ -52,7 +52,7 @@
     <template v-if="pet.status !== 'adopted'">
       <button
         @click.stop="$emit('see-more', pet)"
-        class="mt-4 text-primary hover-underline cursor-pointer w-full text-center py-2 border border-primary rounded-md hover:bg-primary hover:text-white transition-colors duration-300"
+        class="mt-4 text-primary cursor-pointer w-full text-center py-2 border border-primary rounded-md hover:bg-primary hover:text-white transition-colors duration-300"
       >
         See more
       </button>
