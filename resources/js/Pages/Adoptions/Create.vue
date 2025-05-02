@@ -92,7 +92,10 @@ function submit() {
           <label class="font-semibold">Select Pet</label>
           <select v-model="form.pet_id" class="w-full border p-2 rounded mt-2" required>
             <option value="" disabled>Choose a pet</option>
-            <option v-for="pet in pets.data" :key="pet.id" :value="pet.id">
+            <option v-if="selectedPet" :value="selectedPet.id" selected>
+              {{ selectedPet.name }} - {{ selectedPet.breed }} ({{ selectedPet.status }})
+            </option>
+            <option v-for="pet in pets.data" :key="pet.id" :value="pet.id" v-if="!selectedPet || pet.id !== selectedPet.id">
               {{ pet.name }} - {{ pet.breed }} ({{ pet.status }})
             </option>
           </select>

@@ -29,7 +29,7 @@ class AdoptionController extends Controller
         ]);
     }
 
-    public function create()
+    public function create(Request $request, $pet = null)
     {
         $pets = Pet::whereIn('status', [Pet::STATUS_AVAILABLE, Pet::STATUS_PENDING])
             ->orderBy('created_at', 'desc')
@@ -38,8 +38,14 @@ class AdoptionController extends Controller
         $user = Auth::user();
         $roles = $user ? $user->roles->pluck('name')->toArray() : [];
 
+        $selectedPet = null;
+        if ($pet) {
+            $selectedPet = Pet::find($pet);
+        }
+
         return Inertia::render('Adoptions/Create', [
             'pets' => $pets,
+            'selectedPet' => $selectedPet,
             'auth' => [
                 'user' => $user ? [
                     'id' => $user->id,

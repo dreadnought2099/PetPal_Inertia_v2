@@ -1,6 +1,6 @@
 <template>
     <nav
-        class="bg-primary flex justify-between items-center px-8 py-4 text-white"
+        class="bg-primary flex justify-between items-center px-8 py-4 text-white z-100"
     >
         <div>
             <Link

@@ -22,15 +22,14 @@ const deletePet = (id, name) => {
         router.delete(`/pets/${id}`, {
             preserveScroll: true,
             onSuccess: () => {
-                // Remove the deleted pet from the local pets array
-                const index = pets.findIndex(pet => pet.id === id);
-                if (index !== -1) {
-                    pets.splice(index, 1);
-                }
-                // Close the modal if it's open
+                // Close the modal if it shows the deleted pet
                 if (selectedPet.value?.id === id) {
                     selectedPet.value = null;
                 }
+
+                setTimeout(() => {
+                    window.location.reload();   
+                }, 2000);
             }
         });
     }
@@ -175,7 +174,7 @@ const deletePet = (id, name) => {
                             <button
                                 v-if="isShelterOrAdmin"
                                 @click="deletePet(selectedPet.id, selectedPet.name)"
-                                class="bg-red-500 text-white px-4 py-2 rounded hover:bg-white hover:text-secondary border hover:border-secondary hover:scale-105 transition-all"
+                                class="bg-red-500 text-white px-4 py-2 rounded hover:bg-white hover:text-secondary border hover:border-secondary hover:scale-105 transition-all cursor-pointer"
                             >
                                 Delete
                             </button>

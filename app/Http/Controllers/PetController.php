@@ -114,7 +114,7 @@ class PetController extends Controller
         // Delete the pet
         $pet->delete();
 
-        return redirect()->route('pets.index')->with('success', 'Pet listing deleted successfully.');
+        return redirect()->route('pets.index')->with('success', "Pet $pet->name deleted successfully");
     }
 
     public function update(Request $request, $id)
