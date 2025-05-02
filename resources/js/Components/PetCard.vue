@@ -1,8 +1,8 @@
 <template>
   <div
     :class="[
-      'hover:scale-90 transition-transform ease-in-out duration-300',
-      'basis-[249px] bg-white p-4 rounded-lg shadow-md relative border-1',
+      'hover:scale-95 transition-transform ease-in-out duration-300',
+      'basis-[300px] bg-white p-4 rounded-lg shadow-md relative border-1',
       pet.status === 'adopted'
         ? 'cursor-not-allowed pointer-events-none border-secondary opacity-75'
         : 'hover:shadow-lg border-primary transition-shadow duration-200 cursor-pointer'
@@ -16,37 +16,49 @@
       Adopted
     </span>
 
-    <img
-      :src="pet.pet_profile_path ? `/storage/${pet.pet_profile_path}` : '/images/LRM_20240517_192913-01.jpeg'"
-      :alt="pet.name"
-      class="w-full h-48 object-cover rounded-lg"
-      :class="{ grayscale: pet.status === 'adopted' }"
-    />
+    <div class="relative h-48 mb-4">
+      <img
+        :src="pet.pet_profile_path ? `/storage/${pet.pet_profile_path}` : '/images/LRM_20240517_192913-01.jpeg'"
+        :alt="pet.name"
+        class="w-full h-full object-cover rounded-lg"
+        :class="{ grayscale: pet.status === 'adopted' }"
+      />
+    </div>
 
-    <h3 class="text-xl font-bold mt-4">{{ pet.name }}</h3>
-    <p class="text-gray-600">{{ pet.breed }}</p>
+    <div class="space-y-2">
+      <h3 class="text-xl font-bold text-gray-800">{{ pet.name }}</h3>
+      <p class="text-gray-600">{{ pet.breed }}</p>
+      
+      <div class="flex items-center space-x-2 text-sm">
+        <span class="text-gray-500">Age:</span>
+        <span class="text-primary">{{ pet.age }} year/s</span>
+        <span class="text-gray-300">|</span>
+        <span class="text-gray-500">Sex:</span>
+        <span class="text-primary">{{ pet.sex }}</span>
+      </div>
 
-    <p
-      class="text-sm mt-2 font-medium"
-      :class="{
-        'text-note': pet.status === 'adopted',
-        'text-yellow-500': pet.status === 'pending',
-        'text-primary': !pet.status || pet.status === 'available'
-      }"
-    >
-      <span class="text-black">Status:</span> {{ capitalize(pet.status || 'available') }}
-    </p>
+      <p
+        class="text-sm font-medium"
+        :class="{
+          'text-note': pet.status === 'adopted',
+          'text-yellow-500': pet.status === 'pending',
+          'text-primary': !pet.status || pet.status === 'available'
+        }"
+      >
+        <span class="text-gray-600">Status:</span> {{ capitalize(pet.status || 'available') }}
+      </p>
+    </div>
 
     <template v-if="pet.status !== 'adopted'">
       <button
         @click.stop="$emit('see-more', pet)"
-        class="mt-4 text-primary hover-underline-hyperlink cursor-pointer"
+        class="mt-4 text-primary hover-underline cursor-pointer w-full text-center py-2 border border-primary rounded-md hover:bg-primary hover:text-white transition-colors duration-300"
       >
         See more
       </button>
     </template>
     <template v-else>
-      <p class="mt-4 text-note text-sm">{{ pet.name }} has been adopted</p>
+      <p class="mt-4 text-note text-sm text-center">{{ pet.name }} has been adopted</p>
     </template>
   </div>
 </template>

@@ -46,12 +46,30 @@ const deletePet = (id, name) => {
                 </h2>
             </div>
 
+            <!-- Pagination -->
+            <div class="flex justify-end mt-4 mr-6 space-x-2">
+                <button
+                    v-for="(link, index) in pets.links"
+                    :key="index"
+                    @click="router.get(link.url)"
+                    class="px-4 py-2 rounded-md transition-all duration-300"
+                    :class="{
+                        'bg-primary text-white': link.active,
+                        'bg-gray-200 text-gray-700 hover:bg-gray-300': !link.active && link.url,
+                        'bg-gray-100 text-gray-400 cursor-not-allowed': !link.url
+                    }"
+                    :disabled="!link.url"
+                >
+                    <span v-html="link.label"></span>
+                </button>
+            </div>
+
             <div
-                v-if="pets.length"
-                class="flex flex-wrap gap-2 p-6 h-[70vh] overflow-y-auto select-none"
+                v-if="pets.data && pets.data.length"
+                class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6 h-[70vh] overflow-y-auto select-none"
             >
                 <PetCard
-                    v-for="pet in pets"
+                    v-for="pet in pets.data"
                     :key="pet.id"
                     :pet="pet"
                     @see-more="showPetModal"

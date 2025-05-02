@@ -1,15 +1,26 @@
 <script setup>
 import { useForm, Head, Link } from '@inertiajs/vue3'
-import { computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import AppLayout from '../../Layouts/AppLayout.vue'
 import FlashMessage from '../../Components/FlashMessage.vue'
 
 const props = defineProps({
   selectedPet: Object,
-  pets: Array,
+  pets: Object,
   user: Object,
   flash: Object,
   errors: Object,
+})
+
+const page = ref(1)
+const totalPages = computed(() => props.pets?.last_page || 1)
+
+// Debug pagination data
+onMounted(() => {
+  console.log('Pets data:', props.pets)
+  console.log('Pets links:', props.pets?.links)
+  console.log('Current page:', props.pets?.current_page)
+  console.log('Last page:', props.pets?.last_page)
 })
 
 const form = useForm({
@@ -54,7 +65,7 @@ function submit() {
         <span class="text-primary"> Adoption</span>
       </h1>
 
-      <!-- <FlashMessage
+      <FlashMessage
         v-if="flash.success"
         type="success"
         :message="flash.success"
@@ -64,7 +75,7 @@ function submit() {
         v-if="flash.error"
         type="error"
         :message="flash.error"
-      /> -->
+      />
 
       <!-- Form Errors -->
       <div v-if="Object.keys(errors).length" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative m-4" role="alert">
@@ -81,7 +92,7 @@ function submit() {
           <label class="font-semibold">Select Pet</label>
           <select v-model="form.pet_id" class="w-full border p-2 rounded mt-2" required>
             <option value="" disabled>Choose a pet</option>
-            <option v-for="pet in pets" :key="pet.id" :value="pet.id">
+            <option v-for="pet in pets.data" :key="pet.id" :value="pet.id">
               {{ pet.name }} - {{ pet.breed }} ({{ pet.status }})
             </option>
           </select>

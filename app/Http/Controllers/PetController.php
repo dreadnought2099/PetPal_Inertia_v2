@@ -15,11 +15,24 @@ class PetController extends Controller
 {
     public function index()
     {
-        $pets = Pet::all()->map(function ($pet) {
-            $pet->species_text = $pet->species_text;
-            $pet->vaccination_text = $pet->vaccination_text;
-            return $pet;
-        });
+        $pets = Pet::orderBy('created_at', 'desc')
+            ->paginate(10)
+            ->through(function ($pet) {
+                return [
+                    'id' => $pet->id,
+                    'name' => $pet->name,
+                    'age' => $pet->age,
+                    'breed' => $pet->breed,
+                    'allergies' => $pet->allergies,
+                    'status' => $pet->status,
+                    'description' => $pet->description,
+                    'pet_profile_path' => $pet->pet_profile_path,
+                    'sex' => $pet->sex,
+                    'species_text' => $pet->species_text,
+                    'vaccination_text' => $pet->vaccination_text,
+                    'spayed_neutered' => $pet->spayed_neutered,
+                ];
+            });
 
         $user = Auth::user();
 

@@ -29,18 +29,15 @@ class AdoptionController extends Controller
         ]);
     }
 
-    public function create($pet = null): Response
+    public function create()
     {
-        $user = Auth::user();
-
-        // Get all available and pending pets
-        $pets = Pet::whereIn('status', [Pet::STATUS_AVAILABLE, Pet::STATUS_PENDING])->get();
-
-        $selectedPet = $pet ? Pet::find($pet) : null;
+        $pets = Pet::whereIn('status', [Pet::STATUS_AVAILABLE, Pet::STATUS_PENDING])
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
 
         return Inertia::render('Adoptions/Create', [
-            'selectedPet' => $selectedPet,
             'pets' => $pets,
+            'user' => Auth::user(),
         ]);
     }
 
@@ -103,7 +100,7 @@ class AdoptionController extends Controller
 
             // Update pet status to pending if it's available
             if ($pet->status === Pet::STATUS_AVAILABLE) {
-                $pet->update(['status' => Pet::STATUS_PENDING]);
+            $pet->update(['status' => Pet::STATUS_PENDING]);
             }
 
             return redirect()->route('adopt.log')
@@ -228,7 +225,7 @@ class AdoptionController extends Controller
             $adoption->update(['status' => 'approved']);
 
             // Update pet status
-            $adoption->pet->update(['status' => Pet::STATUS_ADOPTED]);
+        $adoption->pet->update(['status' => Pet::STATUS_ADOPTED]);
 
             // Reject all other pending requests for this pet
             Adoption::where('pet_id', $adoption->pet_id)
@@ -254,7 +251,7 @@ class AdoptionController extends Controller
                 ->exists();
 
                 if (!$hasOtherPending) {
-                    $adoption->pet->update(['status' => Pet::STATUS_AVAILABLE]);
+        $adoption->pet->update(['status' => Pet::STATUS_AVAILABLE]);
                 }
         });
 

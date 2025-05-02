@@ -10,7 +10,7 @@
             >
                 Pending Adoption <span class="text-primary ml-1">Requests</span>
             </h1>
-            <p class="text-gray-400 sticky top-12 px-4 z-10">
+            <p class="text-gray-600 sticky top-12 px-4 z-10">
                 Below are the pending requests for pet adoption
             </p>
 
@@ -40,7 +40,7 @@
             </template>
 
             <div v-else class="text-center py-6">
-                <p class="px-6 py-3 text-gray-700 text-center">
+                <p class="px-6 py-3 text-gray-400 text-center">
                     No pending adoption requests at the moment...
                 </p>
             </div>
