@@ -88,8 +88,8 @@ class AdoptionController extends Controller
             }
 
             // Handle file uploads
-            $validIdPath = $request->file('valid_id')->store('adoption/valid_ids', 'public');
-            $validIdBackPath = $request->file('valid_id_back')->store('adoption/valid_ids', 'public');
+            $validIdPath = $request->file('valid_id')->store('adoption/valid_ids/front', 'public');
+            $validIdBackPath = $request->file('valid_id_back')->store('adoption/valid_ids/back', 'public');
 
             Log::info('Files stored at:', [
                 'valid_id' => $validIdPath,
@@ -105,8 +105,8 @@ class AdoptionController extends Controller
                 'address' => $validated['address'],
                 'contact_number' => $validated['contact_number'],
                 'dob' => $validated['dob'],
-                'valid_id' => $validIdPath,
-                'valid_id_back' => $validIdBackPath,
+                'valid_id' => 'adoption/valid_ids/front/' . basename($validIdPath),
+                'valid_id_back' => 'adoption/valid_ids/back/' . basename($validIdBackPath),
                 'previous_experience' => $validated['previous_experience'],
                 'other_pets' => $validated['other_pets'],
                 'financial_preparedness' => $validated['financial_preparedness'],
@@ -171,11 +171,19 @@ class AdoptionController extends Controller
 
         // Handle file uploads
         if ($request->hasFile('valid_id')) {
-            $validated['valid_id'] = $request->file('valid_id')->store('adoption/valid_ids', 'public');
+            // Delete old file if exists
+            if ($adoption->valid_id && Storage::disk('public')->exists($adoption->valid_id)) {
+                Storage::disk('public')->delete($adoption->valid_id);
+            }
+            $validated['valid_id'] = 'adoption/valid_ids/front/' . basename($request->file('valid_id')->store('adoption/valid_ids/front', 'public'));
         }
 
         if ($request->hasFile('valid_id_back')) {
-            $validated['valid_id_back'] = $request->file('valid_id_back')->store('adoption/valid_ids', 'public');
+            // Delete old file if exists
+            if ($adoption->valid_id_back && Storage::disk('public')->exists($adoption->valid_id_back)) {
+                Storage::disk('public')->delete($adoption->valid_id_back);
+            }
+            $validated['valid_id_back'] = 'adoption/valid_ids/back/' . basename($request->file('valid_id_back')->store('adoption/valid_ids/back', 'public'));
         }
 
         $adoption->update($validated);

@@ -10,7 +10,7 @@
             >
                 Pending Adoption <span class="text-primary ml-1">Requests</span>
             </h1>
-            <p class="text-gray-600 sticky top-12 px-4 z-10">
+            <p class="text-gray-400 sticky top-12 px-4 z-10">
                 Below are the pending requests for pet adoption
             </p>
 
