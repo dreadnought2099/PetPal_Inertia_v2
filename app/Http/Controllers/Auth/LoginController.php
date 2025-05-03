@@ -30,6 +30,7 @@ class LoginController extends Controller
         if (!Auth::attempt($validated)) {
             return back()->withErrors([
                 'email' => 'Invalid email or password',
+                'password' => 'Invalid email or password'
             ])->onlyInput('email');
         }
 
@@ -40,8 +41,6 @@ class LoginController extends Controller
 
         // Return Inertia-compatible redirect
         return redirect()->route('pets.index')->with('success', "Login successful! Welcome, {$user->name}.");
-
-
     }
 
     // Handle logout

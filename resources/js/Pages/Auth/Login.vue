@@ -10,8 +10,8 @@
         </h2>
 
         <!-- Flash Messages -->
-        <div v-if="flash.error" class="bg-red-100 border-l-4 border-secondary text-secondary p-2 rounded-md text-xs text-center">
-          {{ flash.error }}
+        <div v-if="form.errors.email || form.errors.password" class="bg-red-100 border-l-4 border-secondary text-secondary p-2 rounded-md text-xs text-center">
+          {{ form.errors.email || form.errors.password }}
         </div>
         <div v-else-if="flash.success" class="bg-green-100 border-l-4 border-green-500 text-green-700 p-2 rounded-md text-xs text-center">
           {{ flash.success }}
@@ -28,8 +28,7 @@
             :class="inputClasses"
             autocomplete="username"
           />
-          <label for="email" :class="labelClasses">Email</label>
-          <!-- <p v-if="form.errors.email" class="text-xs text-red-500 mt-1">{{ form.errors.email }}</p> -->
+          <label for="email" :class="labelClasses">Email</label>      
         </div>
 
         <div class="relative">
@@ -44,7 +43,6 @@
             autocomplete="current-password"
           />
           <label for="password" :class="labelClasses">Password</label>
-          <!-- <p v-if="form.errors.password" class="text-xs text-red-500 mt-1">{{ form.errors.password }}</p> -->
         </div>
 
         <div class="text-right">
