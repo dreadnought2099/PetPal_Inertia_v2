@@ -131,7 +131,10 @@
                     <p class="text-gray-700">
                         Valid ID:
                         <a
-                            :href="'/storage/' + selectedAdoption?.valid_id"
+                            :href="
+                                '/storage/adoption/valid_ids/front/' +
+                                selectedAdoption?.valid_id
+                            "
                             target="_blank"
                             class="text-primary px-2 hover-underline-hyperlink hover:scale-125 transition-all ease-in-out duration-300"
                         >
@@ -139,7 +142,8 @@
                         </a>
                         <a
                             :href="
-                                '/storage/' + selectedAdoption?.valid_id_back
+                                '/storage/adoption/valid_ids/back/' +
+                                selectedAdoption?.valid_id_back
                             "
                             target="_blank"
                             class="text-primary hover-underline-hyperlink hover:scale-125 transition-all ease-in-out duration-300"

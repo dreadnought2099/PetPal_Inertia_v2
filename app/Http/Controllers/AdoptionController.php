@@ -83,6 +83,16 @@ class AdoptionController extends Controller
 
             $pet = Pet::findOrFail($validated['pet_id']);
 
+            // Check if user already has a pending request for this pet
+            $existingRequest = Adoption::where('user_id', Auth::id())
+                ->where('pet_id', $pet->id)
+                ->where('status', Adoption::STATUS_PENDING)
+                ->first();
+
+            if ($existingRequest) {
+                return back()->with('error', 'You already have a pending adoption request for this pet.');
+            }
+
             if ($pet->status === Pet::STATUS_ADOPTED) {
                 return back()->with('error', 'This pet has already been adopted.');
             }
@@ -105,8 +115,8 @@ class AdoptionController extends Controller
                 'address' => $validated['address'],
                 'contact_number' => $validated['contact_number'],
                 'dob' => $validated['dob'],
-                'valid_id' => 'adoption/valid_ids/front/' . basename($validIdPath),
-                'valid_id_back' => 'adoption/valid_ids/back/' . basename($validIdBackPath),
+                'valid_id' => basename($validIdPath),
+                'valid_id_back' => basename($validIdBackPath),
                 'previous_experience' => $validated['previous_experience'],
                 'other_pets' => $validated['other_pets'],
                 'financial_preparedness' => $validated['financial_preparedness'],
@@ -161,36 +171,38 @@ class AdoptionController extends Controller
             'middle_name' => 'nullable|string|max:255',
             'address' => 'required|string|max:255',
             'contact_number' => 'required|string|max:20',
-            'dob' => 'required|date',
+            'dob' => 'required|date|before:-18 years',
+            'valid_id' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:51200',
+            'valid_id_back' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:51200',
             'previous_experience' => 'required|in:yes,no',
             'other_pets' => 'required|in:yes,no',
             'financial_preparedness' => 'required|in:yes,no',
-            'valid_id' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:51200',
-            'valid_id_back' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:51200',
         ]);
 
-        // Handle file uploads
+        // Handle files
         if ($request->hasFile('valid_id')) {
             // Delete old file if exists
-            if ($adoption->valid_id && Storage::disk('public')->exists($adoption->valid_id)) {
-                Storage::disk('public')->delete($adoption->valid_id);
+            if ($adoption->valid_id) {
+                Storage::disk('public')->delete('adoption/valid_ids/front/' . $adoption->valid_id);
             }
-            $validated['valid_id'] = 'adoption/valid_ids/front/' . basename($request->file('valid_id')->store('adoption/valid_ids/front', 'public'));
+            $validIdPath = $request->file('valid_id')->store('adoption/valid_ids/front', 'public');
+            $validated['valid_id'] = basename($validIdPath);
         }
 
         if ($request->hasFile('valid_id_back')) {
             // Delete old file if exists
-            if ($adoption->valid_id_back && Storage::disk('public')->exists($adoption->valid_id_back)) {
-                Storage::disk('public')->delete($adoption->valid_id_back);
+            if ($adoption->valid_id_back) {
+                Storage::disk('public')->delete('adoption/valid_ids/back/' . $adoption->valid_id_back);
             }
-            $validated['valid_id_back'] = 'adoption/valid_ids/back/' . basename($request->file('valid_id_back')->store('adoption/valid_ids/back', 'public'));
+            $validIdBackPath = $request->file('valid_id_back')->store('adoption/valid_ids/back', 'public');
+            $validated['valid_id_back'] = basename($validIdBackPath);
         }
 
         $adoption->update($validated);
 
-        return redirect()->route('adopt.log')->with('success', "Adoption request with ID {$adoption->id} updated successfully.");
+        return redirect()->route('adopt.log')
+            ->with('success', 'Adoption request updated successfully.');
     }
-
 
     public function destroy(Adoption $adoption)
     {
