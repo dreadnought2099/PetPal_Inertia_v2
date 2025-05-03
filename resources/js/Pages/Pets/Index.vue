@@ -10,8 +10,9 @@ const selectedPet = ref(null);
 
 const user = usePage().props.auth?.user || null;
 const roles = user?.roles || [];
-const isAdopter = roles.includes('Adopter');
-const isShelterOrAdmin = roles.includes('Shelter') || roles.includes('Administrator');
+const isAdopter = roles.includes("Adopter");
+const isShelterOrAdmin =
+    roles.includes("Shelter") || roles.includes("Administrator");
 
 function showPetModal(pet) {
     selectedPet.value = pet;
@@ -28,9 +29,9 @@ const deletePet = (id, name) => {
                 }
 
                 setTimeout(() => {
-                    window.location.reload();   
+                    window.location.reload();
                 }, 2000);
-            }
+            },
         });
     }
 };
@@ -54,8 +55,10 @@ const deletePet = (id, name) => {
                     class="px-4 py-2 rounded-md transition-all duration-300"
                     :class="{
                         'bg-primary text-white': link.active,
-                        'bg-gray-200 text-gray-700 hover:bg-gray-300': !link.active && link.url,
-                        'bg-gray-100 text-gray-400 cursor-not-allowed': !link.url
+                        'bg-gray-200 text-gray-700 hover:bg-gray-300':
+                            !link.active && link.url,
+                        'bg-gray-100 text-gray-400 cursor-not-allowed':
+                            !link.url,
                     }"
                     :disabled="!link.url"
                 >
@@ -94,7 +97,7 @@ const deletePet = (id, name) => {
             <!-- Modals -->
             <div v-if="selectedPet">
                 <div
-                    class="modal fixed inset-0 flex items-center justify-center z-50"
+                    class="modal fixed inset-0 flex items-center justify-center z-20"
                     @click.self="selectedPet = null"
                 >
                     <div
@@ -119,37 +122,53 @@ const deletePet = (id, name) => {
                         />
 
                         <h2 class="text-2xl font-bold text-center mb-4">
-                            <span class="text-primary">{{ selectedPet.name }}</span>
+                            <span class="text-primary">{{
+                                selectedPet.name
+                            }}</span>
                         </h2>
 
                         <div class="p-2 grid grid-cols-2 gap-4 text-sm">
                             <p>
                                 Breed:
-                                <span class="text-primary">{{ selectedPet.breed }}</span>
+                                <span class="text-primary">{{
+                                    selectedPet.breed
+                                }}</span>
                             </p>
                             <p>
                                 Age:
-                                <span class="text-primary">{{ selectedPet.age }} year/s</span>
+                                <span class="text-primary"
+                                    >{{ selectedPet.age }} year/s</span
+                                >
                             </p>
                             <p>
                                 Sex:
-                                <span class="text-primary">{{ selectedPet.sex }}</span>
+                                <span class="text-primary">{{
+                                    selectedPet.sex
+                                }}</span>
                             </p>
                             <p>
                                 Species:
-                                <span class="text-primary">{{ selectedPet.species_text }}</span>
+                                <span class="text-primary">{{
+                                    selectedPet.species_text
+                                }}</span>
                             </p>
                             <p>
                                 Allergies:
-                                <span class="text-primary">{{ selectedPet.allergies }}</span>
+                                <span class="text-primary">{{
+                                    selectedPet.allergies
+                                }}</span>
                             </p>
                             <p>
                                 Vaccination:
-                                <span class="text-primary">{{ selectedPet.vaccination_text }}</span>
+                                <span class="text-primary">{{
+                                    selectedPet.vaccination_text
+                                }}</span>
                             </p>
                             <p>
                                 Spayed/Neutered:
-                                <span class="text-primary">{{ selectedPet.spayed_neutered ? "Yes" : "No" }}</span>
+                                <span class="text-primary">{{
+                                    selectedPet.spayed_neutered ? "Yes" : "No"
+                                }}</span>
                             </p>
                         </div>
 
@@ -173,7 +192,9 @@ const deletePet = (id, name) => {
 
                             <button
                                 v-if="isShelterOrAdmin"
-                                @click="deletePet(selectedPet.id, selectedPet.name)"
+                                @click="
+                                    deletePet(selectedPet.id, selectedPet.name)
+                                "
                                 class="bg-red-500 text-white px-4 py-2 rounded hover:bg-white hover:text-secondary border hover:border-secondary hover:scale-105 transition-all cursor-pointer"
                             >
                                 Delete

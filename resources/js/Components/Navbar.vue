@@ -1,6 +1,6 @@
 <template>
     <nav
-        class="bg-primary flex justify-between items-center px-8 py-4 text-white z-100"
+        class="bg-primary flex justify-between items-center px-8 py-4 text-white z-10"
     >
         <div>
             <Link
@@ -11,14 +11,29 @@
             </Link>
         </div>
 
-        <div class="flex items-center space-x-6 text-lg font-bold">
+        <div class="flex items-center space-x-6 text-lg font-bold z-10">
             <Link href="/" class="hover-underline" title="Go Home">Home</Link>
-            <Link href="/pets" class="hover-underline" title="Available pet listings">Our Pets</Link>
+            <Link
+                href="/pets"
+                class="hover-underline"
+                title="Available pet listings"
+                >Our Pets</Link
+            >
 
             <!-- Shelter/Admin Links -->
             <template v-if="isShelterOrAdmin">
-                <Link href="/pets/create" class="hover-underline" title="Add pet listing">Add Pet</Link>
-                <Link href="/adopt/pending" class="hover-underline" title="View available pending requests">Pending Requests</Link>
+                <Link
+                    href="/pets/create"
+                    class="hover-underline"
+                    title="Add pet listing"
+                    >Add Pet</Link
+                >
+                <Link
+                    href="/adopt/pending"
+                    class="hover-underline"
+                    title="View available pending requests"
+                    >Pending Requests</Link
+                >
             </template>
 
             <!-- Adopter Link -->
@@ -69,28 +84,32 @@
                             <li>
                                 <Link
                                     href="/profile"
-                                    class="block px-4 py-2 text-gray-700 hover:bg-gray-100" title="See Profile"
+                                    class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                                    title="See Profile"
                                     >Profile</Link
                                 >
                             </li>
                             <li v-if="isAdopter">
                                 <Link
                                     href="/adopt/log"
-                                    class="block px-4 py-2 text-gray-700 hover:bg-gray-100"  title="See Adoption History"
+                                    class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                                    title="See Adoption History"
                                     >Adoption Log</Link
                                 >
                             </li>
                             <li v-if="isAdmin">
                                 <Link
                                     href="/admin/users"
-                                    class="block px-4 py-2 text-gray-700 hover:bg-gray-100" title="Manage Users"
+                                    class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                                    title="Manage Users"
                                     >Dashboard</Link
                                 >
                             </li>
                             <li>
                                 <Link
                                     href="/settings"
-                                    class="block px-4 py-2 text-gray-700 hover:bg-gray-100" title="Go to Settings"
+                                    class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                                    title="Go to Settings"
                                     >Settings</Link
                                 >
                             </li>
@@ -98,7 +117,8 @@
                                 <form @submit.prevent="logout">
                                     <button
                                         type="submit"
-                                        class="w-full text-left px-4 py-2 text-primary hover:bg-gray-100 cursor-pointer" title="Click to Logout"
+                                        class="w-full text-left px-4 py-2 text-primary hover:bg-gray-100 cursor-pointer"
+                                        title="Click to Logout"
                                     >
                                         Logout
                                     </button>
@@ -134,8 +154,8 @@ const toggleDropdown = () => {
 // Defensive role checks
 const getRoles = () => (user && Array.isArray(user.roles) ? user.roles : []);
 
-const isShelterOrAdmin = computed(() =>
-    getRoles().includes("Shelter") || getRoles().includes("Administrator")
+const isShelterOrAdmin = computed(
+    () => getRoles().includes("Shelter") || getRoles().includes("Administrator")
 );
 const isAdopter = computed(() => getRoles().includes("Adopter"));
 const isAdmin = computed(() => getRoles().includes("Administrator"));
