@@ -165,82 +165,82 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
-import axios from 'axios'
-import { router } from '@inertiajs/vue3'
-import AppLayout from '../../Layouts/AppLayout.vue'
-import FlashMessage from '../../Components/FlashMessage.vue'
+import { ref, reactive } from "vue";
+import axios from "axios";
+import { router } from "@inertiajs/vue3";
+import AppLayout from "../../Layouts/AppLayout.vue";
 
 const props = defineProps({
-  adoption: Object,
-  pets: Array,
-})
+    adoption: Object,
+    pets: Array,
+});
 
 const fieldLabels = {
-  last_name: 'Last Name',
-  first_name: 'First Name',
-  middle_name: 'Middle Name',
-  address: 'Address',
-  contact_number: 'Contact Number',
-  dob: 'Date of Birth',
-}
+    last_name: "Last Name",
+    first_name: "First Name",
+    middle_name: "Middle Name (optional)",
+    address: "Address",
+    contact_number: "Contact Number",
+    dob: "Date of Birth",
+};
 
 const questions = {
-  previous_experience: 'Do you have previous pet ownership experience?',
-  other_pets: 'Do you have other pets at home?',
-  financial_preparedness: 'Are you financially prepared for pet care?',
-}
+    previous_experience: "Do you have previous pet ownership experience?",
+    other_pets: "Do you have other pets at home?",
+    financial_preparedness: "Are you financially prepared for pet care?",
+};
 
-const form = reactive({ ...props.adoption })
-const files = reactive({ valid_id: null, valid_id_back: null })
-const modalImage = ref(null)
+const form = reactive({ ...props.adoption });
+const files = reactive({ valid_id: null, valid_id_back: null });
+const modalImage = ref(null);
 
 function handleFileChange(event, field) {
-  files[field] = event.target.files[0]
+    files[field] = event.target.files[0];
 }
 
 function showImage(path) {
-  modalImage.value = path
+    modalImage.value = path;
 }
 
 function closeImageModal() {
-  modalImage.value = null
+    modalImage.value = null;
 }
 
 function goBack() {
-  router.visit('/adopt/log')
+    router.visit("/adopt/log");
 }
 
 async function submitForm() {
-  const data = new FormData()
-  
-  // Append all non-file form fields
-  Object.keys(form).forEach(key => {
-    if (key !== 'valid_id' && key !== 'valid_id_back') {
-      data.append(key, form[key] ?? '')
+    const data = new FormData();
+
+    // Append all non-file form fields
+    Object.keys(form).forEach((key) => {
+        if (key !== "valid_id" && key !== "valid_id_back") {
+            data.append(key, form[key] ?? "");
+        }
+    });
+
+    // Append actual file objects
+    if (files.valid_id) data.append("valid_id", files.valid_id);
+    if (files.valid_id_back) data.append("valid_id_back", files.valid_id_back);
+
+    try {
+        await axios.post(`/adopt/${props.adoption.id}`, data, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                "X-HTTP-Method-Override": "PUT",
+            },
+        });
+
+        router.visit("/adopt/log");
+    } catch (error) {
+        console.error("Form submission failed:", error.response?.data ?? error);
     }
-  })
-
-  // Append actual file objects
-  if (files.valid_id) data.append('valid_id', files.valid_id)
-  if (files.valid_id_back) data.append('valid_id_back', files.valid_id_back)
-
-  try {
-    await axios.post(`/adopt/${props.adoption.id}`, data, {
-      headers: { 
-        'Content-Type': 'multipart/form-data',
-        'X-HTTP-Method-Override': 'PUT',
-      },
-    })
-    router.visit('/adopt/log')
-  } catch (error) {
-    console.error('Form submission failed:', error.response?.data ?? error)
-  }
 }
 </script>
 
 <style scoped>
-  .modal {
+.modal {
     background-color: rgba(0, 0, 0, 0.4);
-  }
+}
 </style>

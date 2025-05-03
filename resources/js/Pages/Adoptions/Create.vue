@@ -63,7 +63,7 @@ function submit() {
             class="container mx-auto max-w-5xl bg-white mt-4 border border-primary rounded-lg shadow-md overflow-y-auto h-[80vh]"
         >
             <h1
-                class="flex gap-[5px] sticky top-0 py-2 px-4 text-2xl font-bold bg-white z-10 justify-center"
+                class="flex gap-[5px] sticky top-0 py-2 px-4 text-2xl font-bold bg-white justify-center"
             >
                 Apply for
                 <span class="text-primary"> Adoption</span>

@@ -2,12 +2,17 @@
     <Head title="Adoption Log" />
 
     <AppLayout>
+        <FlashMessage
+            v-if="flashMessage"
+            :message="flashMessage"
+            type="success"
+        />
         <div
             class="container mx-auto max-w-5xl bg-white mt-6 border border-primary rounded-lg shadow-md overflow-y-auto h-[80vh] p-6"
         >
             <div class="relative w-full">
                 <h2
-                    class="flex gap-[5px] sticky top-0 py-3 px-6 text-2xl font-semibold bg-white z-10 justify-center"
+                    class="flex gap-[5px] sticky top-0 py-3 px-6 text-2xl font-semibold bg-white justify-center"
                 >
                     Adoption <span class="text-primary">Log</span>
                 </h2>
@@ -141,12 +146,14 @@
 import { ref, computed } from "vue";
 import { Head, Link, usePage, useForm } from "@inertiajs/vue3";
 import AppLayout from "../../Layouts/AppLayout.vue";
+import FlashMessage from "../../Components/FlashMessage.vue";
 
 const page = usePage();
 const adoptions = page.props.adoptions || [];
 const authUser = page.props.auth?.user || null;
 const form = useForm({});
 const selectedFilter = ref("all"); // Default filter set to all
+const flashMessage = page.props.flash?.success || ""; // Get flash message
 
 // Add state to track deletion process for each adoption
 const deleting = ref({});

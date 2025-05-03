@@ -115,7 +115,7 @@ class AdoptionController extends Controller
 
             // Update pet status to pending if it's available
             if ($pet->status === Pet::STATUS_AVAILABLE) {
-            $pet->update(['status' => Pet::STATUS_PENDING]);
+                $pet->update(['status' => Pet::STATUS_PENDING]);
             }
 
             return redirect()->route('adopt.log')
@@ -154,7 +154,7 @@ class AdoptionController extends Controller
 
     public function update(Request $request, Adoption $adoption)
     {
-    
+
         $validated = $request->validate([
             'pet_id' => 'required|exists:pets,id',
             'last_name' => 'required|string|max:255',
@@ -169,21 +169,21 @@ class AdoptionController extends Controller
             'valid_id' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:51200',
             'valid_id_back' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:51200',
         ]);
-    
+
         // Handle file uploads
         if ($request->hasFile('valid_id')) {
             $validated['valid_id'] = $request->file('valid_id')->store('valid_ids', 'public');
         }
-    
+
         if ($request->hasFile('valid_id_back')) {
             $validated['valid_id_back'] = $request->file('valid_id_back')->store('valid_ids', 'public');
         }
-    
+
         $adoption->update($validated);
-        
+
         return redirect()->route('adopt.log')->with('success', "Adoption request with ID {$adoption->id} updated successfully.");
     }
-    
+
 
     public function destroy(Adoption $adoption)
     {
@@ -195,7 +195,7 @@ class AdoptionController extends Controller
 
         // Load the pet relationship
         $adoption->load('pet');
-        
+
         // Log current pet status and adoption details
         Log::info('Before deletion:', [
             'adoption_id' => $adoption->id,
@@ -203,16 +203,16 @@ class AdoptionController extends Controller
             'pet_status' => $adoption->pet->status,
             'adoption_status' => $adoption->status
         ]);
-        
+
         // Update pet status back to available
         $adoption->pet->update(['status' => 'available']);
-        
+
         // Log updated pet status
         Log::info('After pet status update:', [
             'pet_id' => $adoption->pet_id,
             'new_status' => $adoption->pet->fresh()->status
         ]);
-        
+
         $adoption->delete();
 
         return redirect()->route('adopt.log')->with('success', 'Adoption request deleted successfully.');
@@ -240,7 +240,7 @@ class AdoptionController extends Controller
             $adoption->update(['status' => 'approved']);
 
             // Update pet status
-        $adoption->pet->update(['status' => Pet::STATUS_ADOPTED]);
+            $adoption->pet->update(['status' => Pet::STATUS_ADOPTED]);
 
             // Reject all other pending requests for this pet
             Adoption::where('pet_id', $adoption->pet_id)
@@ -257,7 +257,7 @@ class AdoptionController extends Controller
 
         $this->authorize('reject', $adoption);
 
-        DB::transaction(function() use ($adoption) {
+        DB::transaction(function () use ($adoption) {
             $adoption->update(['status' => 'rejected']);
 
             // If this was the only pending request, make pet available again
@@ -265,9 +265,9 @@ class AdoptionController extends Controller
                 ->where('status', 'pending')
                 ->exists();
 
-                if (!$hasOtherPending) {
-        $adoption->pet->update(['status' => Pet::STATUS_AVAILABLE]);
-                }
+            if (!$hasOtherPending) {
+                $adoption->pet->update(['status' => Pet::STATUS_AVAILABLE]);
+            }
         });
 
         return back()->with('success', 'Adoption request rejected.');
