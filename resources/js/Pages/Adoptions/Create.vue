@@ -12,17 +12,6 @@ const props = defineProps({
     errors: Object,
 });
 
-const page = ref(1);
-const totalPages = computed(() => props.pets?.last_page || 1);
-
-// Debug pagination data
-onMounted(() => {
-    console.log("Pets data:", props.pets);
-    console.log("Pets links:", props.pets?.links);
-    console.log("Current page:", props.pets?.current_page);
-    console.log("Last page:", props.pets?.last_page);
-});
-
 const form = useForm({
     pet_id: props.selectedPet?.id || "",
     last_name: "",

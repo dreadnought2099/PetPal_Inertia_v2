@@ -154,7 +154,6 @@ class AdoptionController extends Controller
 
     public function update(Request $request, Adoption $adoption)
     {
-
         $validated = $request->validate([
             'pet_id' => 'required|exists:pets,id',
             'last_name' => 'required|string|max:255',
@@ -172,11 +171,11 @@ class AdoptionController extends Controller
 
         // Handle file uploads
         if ($request->hasFile('valid_id')) {
-            $validated['valid_id'] = $request->file('valid_id')->store('valid_ids', 'public');
+            $validated['valid_id'] = $request->file('valid_id')->store('adoption/valid_ids', 'public');
         }
 
         if ($request->hasFile('valid_id_back')) {
-            $validated['valid_id_back'] = $request->file('valid_id_back')->store('valid_ids', 'public');
+            $validated['valid_id_back'] = $request->file('valid_id_back')->store('adoption/valid_ids', 'public');
         }
 
         $adoption->update($validated);

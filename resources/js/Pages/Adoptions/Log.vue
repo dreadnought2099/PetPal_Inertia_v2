@@ -2,11 +2,6 @@
     <Head title="Adoption Log" />
 
     <AppLayout>
-        <FlashMessage
-            v-if="flashMessage"
-            :message="flashMessage"
-            type="success"
-        />
         <div
             class="container mx-auto max-w-5xl bg-white mt-6 border border-primary rounded-lg shadow-md overflow-y-auto h-[80vh] p-6"
         >
@@ -116,16 +111,31 @@
                                         >
                                             <button
                                                 type="submit"
-                                                class="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-white hover:text-red-500 border border-red-500 transition cursor-pointer"
+                                                class="relative w-24 bg-red-500 text-white py-2 px-4 rounded-md hover:bg-white hover:text-red-500 border border-red-500 transition cursor-pointer"
                                                 :disabled="
                                                     deleting[adoption.id]
                                                 "
                                             >
                                                 <span
-                                                    v-if="deleting[adoption.id]"
-                                                    >Deleting...</span
+                                                    :class="
+                                                        deleting[adoption.id]
+                                                            ? 'opacity-100'
+                                                            : 'opacity-0'
+                                                    "
+                                                    class="absolute inset-0 flex items-center justify-center"
                                                 >
-                                                <span v-else>Delete</span>
+                                                    Deleting...
+                                                </span>
+                                                <span
+                                                    :class="
+                                                        !deleting[adoption.id]
+                                                            ? 'opacity-100'
+                                                            : 'opacity-0'
+                                                    "
+                                                    class="flex items-center justify-center"
+                                                >
+                                                    Delete
+                                                </span>
                                             </button>
                                         </form>
                                     </template>
@@ -146,14 +156,12 @@
 import { ref, computed } from "vue";
 import { Head, Link, usePage, useForm } from "@inertiajs/vue3";
 import AppLayout from "../../Layouts/AppLayout.vue";
-import FlashMessage from "../../Components/FlashMessage.vue";
 
 const page = usePage();
 const adoptions = page.props.adoptions || [];
 const authUser = page.props.auth?.user || null;
 const form = useForm({});
 const selectedFilter = ref("all"); // Default filter set to all
-const flashMessage = page.props.flash?.success || ""; // Get flash message
 
 // Add state to track deletion process for each adoption
 const deleting = ref({});

@@ -4,13 +4,13 @@
             class="container mx-auto max-w-5xl bg-white mt-4 border border-primary rounded-lg shadow-md overflow-y-auto h-[80vh]"
         >
             <h1
-                class="flex gap-2 sticky top-0 py-2 px-4 text-2xl font-bold bg-white z-10 justify-center"
+                class="flex gap-2 sticky top-0 py-2 px-4 text-2xl font-bold bg-white justify-center"
             >
                 Edit <span class="text-primary">Adoption</span> Details
             </h1>
 
             <form
-                @submit.prevent="submitForm"
+                @submit.prevent="handleSubmit"
                 class="space-y-4 p-6 mb-6 rounded-lg"
                 enctype="multipart/form-data"
             >
@@ -18,13 +18,13 @@
                 <div class="p-3 bg-gray-100 rounded-md">
                     <label class="font-semibold">Select Pet</label>
                     <select
-                        v-model="form.pet_id"
+                        v-model="submitForm.pet_id"
                         class="w-full border p-2 rounded mt-2"
                         required
                     >
                         <option value="" disabled>Choose a pet</option>
                         <option
-                            v-for="pet in pets"
+                            v-for="pet in availablePets"
                             :key="pet.id"
                             :value="pet.id"
                         >
@@ -41,7 +41,7 @@
                 >
                     <input
                         :type="key === 'dob' ? 'date' : 'text'"
-                        v-model="form[key]"
+                        v-model="submitForm[key]"
                         :placeholder="label"
                         :required="key !== 'middle_name'"
                         class="peer py-3 w-full placeholder-transparent rounded-md text-gray-700 ring-1 px-4 ring-gray-400 focus:ring-2 focus:ring-primary focus:border-primary outline-none"
@@ -63,13 +63,17 @@
                     />
                     <label
                         class="absolute left-0 -top-3 text-sm text-gray-600 bg-white mx-1 px-1"
-                        >Upload Valid ID</label
                     >
+                        Upload Valid ID
+                    </label>
                     <img
-                        v-if="adoption.valid_id"
-                        :src="`/storage/${adoption.valid_id}`"
+                        v-if="
+                            previewImages.valid_id &&
+                            !previewImages.valid_id.includes('.pdf')
+                        "
+                        :src="previewImages.valid_id"
                         class="mt-2 w-32 h-32 object-cover rounded-md cursor-pointer"
-                        @click="showImage(adoption.valid_id)"
+                        @click="showImage(previewImages.valid_id)"
                     />
                 </div>
 
@@ -82,13 +86,17 @@
                     />
                     <label
                         class="absolute left-0 -top-3 text-sm text-gray-600 bg-white mx-1 px-1"
-                        >Upload Valid ID Back</label
                     >
+                        Upload Valid ID Back
+                    </label>
                     <img
-                        v-if="adoption.valid_id_back"
-                        :src="`/storage/${adoption.valid_id_back}`"
+                        v-if="
+                            previewImages.valid_id_back &&
+                            !previewImages.valid_id_back.includes('.pdf')
+                        "
+                        :src="previewImages.valid_id_back"
                         class="mt-2 w-32 h-32 object-cover rounded-md cursor-pointer"
-                        @click="showImage(adoption.valid_id_back)"
+                        @click="showImage(previewImages.valid_id_back)"
                     />
                 </div>
 
@@ -99,26 +107,26 @@
                     class="mb-4"
                 >
                     <legend class="font-semibold">{{ question }}</legend>
-                    <label
-                        ><input
+                    <label>
+                        <input
                             type="radio"
                             :name="key"
                             value="yes"
-                            v-model="form[key]"
+                            v-model="submitForm[key]"
                             required
                         />
-                        Yes</label
-                    >
-                    <label class="ml-4"
-                        ><input
+                        Yes
+                    </label>
+                    <label class="ml-4">
+                        <input
                             type="radio"
                             :name="key"
                             value="no"
-                            v-model="form[key]"
+                            v-model="submitForm[key]"
                             required
                         />
-                        No</label
-                    >
+                        No
+                    </label>
                 </fieldset>
 
                 <!-- Buttons -->
@@ -150,7 +158,7 @@
         >
             <div class="relative">
                 <img
-                    :src="`/storage/${modalImage}`"
+                    :src="modalImage"
                     class="w-auto h-auto max-w-full max-h-80 rounded-lg hover:scale-105 transition-all duration-300 ease-in-out cursor-pointer"
                 />
                 <button
@@ -165,8 +173,8 @@
 </template>
 
 <script setup>
-import { ref, reactive } from "vue";
-import axios from "axios";
+import { ref, reactive, computed } from "vue";
+import { useForm } from "@inertiajs/vue3";
 import { router } from "@inertiajs/vue3";
 import AppLayout from "../../Layouts/AppLayout.vue";
 
@@ -190,12 +198,33 @@ const questions = {
     financial_preparedness: "Are you financially prepared for pet care?",
 };
 
-const form = reactive({ ...props.adoption });
-const files = reactive({ valid_id: null, valid_id_back: null });
 const modalImage = ref(null);
 
+const submitForm = useForm({
+    ...props.adoption,
+    valid_id: null,
+    valid_id_back: null,
+});
+
+const previewImages = reactive({
+    valid_id: props.adoption.valid_id
+        ? `/storage/${props.adoption.valid_id}`
+        : null,
+    valid_id_back: props.adoption.valid_id_back
+        ? `/storage/${props.adoption.valid_id_back}`
+        : null,
+});
+
+const availablePets = computed(() => {
+    return props.pets.filter((pet) => pet.status !== "adopted");
+});
+
 function handleFileChange(event, field) {
-    files[field] = event.target.files[0];
+    const file = event.target.files[0];
+    if (file) {
+        submitForm[field] = file;
+        previewImages[field] = URL.createObjectURL(file);
+    }
 }
 
 function showImage(path) {
@@ -210,32 +239,34 @@ function goBack() {
     router.visit("/adopt/log");
 }
 
-async function submitForm() {
-    const data = new FormData();
-
-    // Append all non-file form fields
-    Object.keys(form).forEach((key) => {
-        if (key !== "valid_id" && key !== "valid_id_back") {
-            data.append(key, form[key] ?? "");
+async function handleSubmit() {
+    const formData = new FormData();
+    
+    // Add all form fields except files
+    Object.keys(submitForm).forEach(key => {
+        if (key !== 'valid_id' && key !== 'valid_id_back') {
+            formData.append(key, submitForm[key]);
         }
     });
 
-    // Append actual file objects
-    if (files.valid_id) data.append("valid_id", files.valid_id);
-    if (files.valid_id_back) data.append("valid_id_back", files.valid_id_back);
-
-    try {
-        await axios.post(`/adopt/${props.adoption.id}`, data, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-                "X-HTTP-Method-Override": "PUT",
-            },
-        });
-
-        router.visit("/adopt/log");
-    } catch (error) {
-        console.error("Form submission failed:", error.response?.data ?? error);
+    // Add files if they exist
+    if (submitForm.valid_id instanceof File) {
+        formData.append('valid_id', submitForm.valid_id);
     }
+    if (submitForm.valid_id_back instanceof File) {
+        formData.append('valid_id_back', submitForm.valid_id_back);
+    }
+
+    submitForm.put(`/adopt/${props.adoption.id}`, {
+        data: formData,
+        preserveScroll: true,
+        preserveState: true,
+        onSuccess: () => {
+            setTimeout(() => {
+                router.visit("/adopt/log");
+            }, 4000);
+        },
+    });
 }
 </script>
 
