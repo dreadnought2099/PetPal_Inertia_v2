@@ -29,10 +29,7 @@
                     </select>
                 </div>
 
-                <div
-                    v-if="filteredAdoptions.length === 0"
-                    class="text-center"
-                >
+                <div v-if="filteredAdoptions.length === 0" class="text-center">
                     <p class="text-gray-400 text-1xl">
                         No adoption requests found for the selected status.
                     </p>
@@ -114,10 +111,13 @@
                                         >
                                             <button
                                                 type="submit"
-                                                class="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-white hover:text-red-500 border border-red-500 transition"
-                                                :disabled="form.processing"
+                                                class="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-white hover:text-red-500 border border-red-500 transition cursor-pointer"
+                                                :disabled="
+                                                    deleting[adoption.id]
+                                                "
                                             >
-                                                <span v-if="form.processing"
+                                                <span
+                                                    v-if="deleting[adoption.id]"
                                                     >Deleting...</span
                                                 >
                                                 <span v-else>Delete</span>
@@ -148,6 +148,9 @@ const authUser = page.props.auth?.user || null;
 const form = useForm({});
 const selectedFilter = ref("all"); // Default filter set to all
 
+// Add state to track deletion process for each adoption
+const deleting = ref({});
+
 // Computed property to filter adoptions based on selected status
 const filteredAdoptions = computed(() => {
     if (selectedFilter.value === "all") return adoptions;
@@ -165,38 +168,38 @@ function capitalize(str) {
 function statusColor(status) {
     const lowerStatus = status.toLowerCase();
     switch (lowerStatus) {
-        case 'pending':
-            return 'text-yellow-400';
-        case 'approved':
-            return 'text-green-500';
-        case 'rejected':
-            return 'text-red-500';
-        case 'cancelled':
-            return 'text-gray-500';
-        case 'archived':
-            return 'text-gray-400';
+        case "pending":
+            return "text-yellow-400";
+        case "approved":
+            return "text-green-500";
+        case "rejected":
+            return "text-red-500";
+        case "cancelled":
+            return "text-gray-500";
+        case "archived":
+            return "text-gray-400";
         default:
-            return '';
+            return "";
     }
 }
 
 // Check if user can manage adoption (edit/delete)
 function canManageAdoption(adoption) {
     if (!authUser) return false;
-    
+
     const isOwner = authUser.id === adoption.user_id;
     const isAdminOrShelter = authUser.roles?.some(
         (role) => role.name === "Administrator" || role.name === "Shelter"
     );
-    
+
     // If user is admin or shelter, they can manage any request
     if (isAdminOrShelter) return true;
-    
+
     // If user is owner, they can only manage if status is pending
     if (isOwner) {
-        return adoption.status.toLowerCase() === 'pending';
+        return adoption.status.toLowerCase() === "pending";
     }
-    
+
     return false;
 }
 
@@ -208,11 +211,17 @@ function deleteAdoption(id, status) {
     }
 
     if (confirm("Are you sure you want to delete this adoption request?")) {
+        deleting.value[id] = true; // Mark this adoption as being deleted
+
         form.delete(`/adopt/${id}`, {
             preserveScroll: false,
             onSuccess: () => {
-                window.location.reload();
-            }
+                deleting.value[id] = false; // Reset deletion state
+                window.location.reload(); // Reload after success
+            },
+            onError: () => {
+                deleting.value[id] = false; // Reset deletion state if error occurs
+            },
         });
     }
 }
