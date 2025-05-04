@@ -1,6 +1,6 @@
 <script setup>
 import { useForm, Head, Link } from "@inertiajs/vue3";
-import { ref, computed, onMounted } from "vue";
+import { ref, computed } from "vue";
 import AppLayout from "../../Layouts/AppLayout.vue";
 import FlashMessage from "../../Components/FlashMessage.vue";
 
@@ -52,7 +52,7 @@ function submit() {
             class="container mx-auto max-w-5xl bg-white mt-4 border border-primary rounded-lg shadow-md overflow-y-auto h-[80vh]"
         >
             <h1
-                class="flex gap-[5px] sticky top-0 py-2 px-4 text-2xl font-bold bg-white justify-center z-1"
+                class="flex gap-1 sticky top-0 py-2 px-4 text-2xl font-bold bg-white justify-center z-[1]"
             >
                 Apply for
                 <span class="text-primary"> Adoption</span>
@@ -77,11 +77,7 @@ function submit() {
                 role="alert"
             >
                 <ul>
-                    <li
-                        v-for="(error, field) in errors"
-                        :key="field"
-                        class="block sm:inline"
-                    >
+                    <li v-for="(error, field) in errors" :key="field">
                         {{ error }}
                     </li>
                 </ul>
@@ -101,23 +97,16 @@ function submit() {
                         required
                     >
                         <option value="" disabled>Choose a pet</option>
-                        <option
-                            v-if="selectedPet"
-                            :value="selectedPet.id"
-                            selected
-                        >
-                            {{ selectedPet.name }} - {{ selectedPet.breed }} ({{
-                                selectedPet.status
-                            }})
-                        </option>
-                        <option
-                            v-for="pet in pets.data"
-                            :key="pet.id"
-                            :value="pet.id"
-                            v-if="!selectedPet || pet.id !== selectedPet.id"
-                        >
-                            {{ pet.name }} - {{ pet.breed }}
-                        </option>
+                        <template v-if="pets?.data">
+                            <option
+                                v-for="pet in pets.data"
+                                :key="pet.id"
+                                :value="pet.id"
+                            >
+                                {{ pet.name }} - {{ pet.breed }}
+                                ({{ pet.status }})
+                            </option>
+                        </template>
                     </select>
                 </div>
 
@@ -310,18 +299,16 @@ function submit() {
                 </div>
 
                 <!-- Submit Button -->
-                <div
-                    class="flex space-y-4 md:flex-row md:space-x-4 md:space-y-0"
-                >
+                <div class="flex flex-col md:flex-row gap-4">
                     <button
                         type="submit"
-                        class="border-1 hover:border-primary bg-primary hover:bg-white hover:text-primary cursor-pointer text-white font-bold py-2 px-4 rounded-lg transition hover:scale-105 hover:opacity-80 duration-300 ease-in-out"
+                        class="border hover:border-primary bg-primary hover:bg-white hover:text-primary text-white font-bold py-2 px-4 rounded-lg transition hover:scale-105 hover:opacity-80 duration-300"
                     >
                         Apply Now
                     </button>
                     <Link
                         :href="props.user ? '/pets' : '/home'"
-                        class="border-1 hover:border-primary bg-white hover:bg-white hover:text-primary text-dark font-bold py-2 px-4 rounded-lg transition hover:scale-105 hover:opacity-80 duration-300 ease-in-out"
+                        class="border hover:border-primary bg-white hover:bg-white hover:text-primary text-dark font-bold py-2 px-4 rounded-lg transition hover:scale-105 hover:opacity-80 duration-300"
                     >
                         Back
                     </Link>
