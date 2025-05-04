@@ -29,7 +29,7 @@ class AdoptionController extends Controller
         ]);
     }
 
-    public function create(Request $request, $pet = null)
+    public function create($pet = null)
     {
         $pets = Pet::whereIn('status', [Pet::STATUS_AVAILABLE, Pet::STATUS_PENDING])
             ->orderBy('created_at', 'desc')
