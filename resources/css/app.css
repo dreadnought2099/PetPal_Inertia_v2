@@ -37,7 +37,14 @@
 
     body {
         font-family: "Baloo", sans-serif;
+    } 
+
+    #nprogress .bar {
+        height: 12px; 
+        border-radius: 9999px;
     }
+
+  
 }
 
 @layer utilities {
