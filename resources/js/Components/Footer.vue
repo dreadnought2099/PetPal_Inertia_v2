@@ -5,6 +5,7 @@
           <div>
             <Link
               href="/"
+              title="PetPal"
               class="text-3xl font-bold text-primary hover-underline-hyperlink hover:scale-110 transition-all duration-300 ease-in-out cursor-pointer"
               >PetPal</Link
             >
@@ -17,6 +18,7 @@
               <li>
                 <Link
                   href="/about"
+                  title="About us"
                   class="text-sm text-primary hover-underline-hyperlink transition cursor-pointer"
                   >About</Link
                 >
@@ -24,6 +26,7 @@
               <li>
                 <Link
                   href="/contact"
+                  title="Contact us"
                   class="text-sm text-primary hover-underline-hyperlink transition cursor-pointer"
                   >Contact</Link
                 >
@@ -62,7 +65,7 @@
         <div class="mt-10 pt-6">
           <p class="text-center text-gray-500">
             &copy; <span>{{ currentYear }}</span>
-            <a href="/" class="text-gray-500 hover-underline-hyperlink mx-1">PetPal.</a>All Rights Reserved.
+            <a href="/" title="PetPal" class="text-gray-500 hover-underline-hyperlink mx-1">PetPal.</a>All Rights Reserved.
           </p>
         </div>
       </div>

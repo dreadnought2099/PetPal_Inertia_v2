@@ -5,6 +5,7 @@
         <div>
             <Link
                 href="/"
+                title="PetPal"
                 class="flex flex-col text-3xl text-white hover-underline hover:scale-115 transition-all duration-300 ease-in-out"
             >
                 PetPal <span class="text-sm">Find.Love.Adopt</span>
@@ -131,8 +132,8 @@
 
             <!-- Guest Links -->
             <template v-else>
-                <Link href="/login" class="hover-underline">Login</Link>
-                <Link href="/register" class="hover-underline">Register</Link>
+                <Link href="/login" class="hover-underline" title="Login">Login</Link>
+                <Link href="/register" class="hover-underline" title="Register">Register</Link>
             </template>
         </div>
     </nav>
