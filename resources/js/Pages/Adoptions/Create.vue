@@ -205,7 +205,7 @@ function submit() {
                     />
                     <label
                         class="absolute cursor-text left-0 -top-3 text-sm text-gray-600 bg-white mx-1 px-1 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-3 peer-focus:text-primary peer-focus:text-sm peer-focus:bg-white peer-focus:px-2 peer-focus:rounded-md"
-                        >Upload Valid ID (JPEG, PNG, JPG, PDF)</label
+                        >Valid ID (JPEG, PNG, JPG, PDF)</label
                     >
                 </div>
 
@@ -219,7 +219,7 @@ function submit() {
                     />
                     <label
                         class="absolute cursor-text left-0 -top-3 text-sm text-gray-600 bg-white mx-1 px-1 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-3 peer-focus:text-primary peer-focus:text-sm peer-focus:bg-white peer-focus:px-2 peer-focus:rounded-md"
-                        >Upload Back of Valid ID (JPEG, PNG, JPG, PDF)</label
+                        >Back of Valid ID (JPEG, PNG, JPG, PDF)</label
                     >
                 </div>
 

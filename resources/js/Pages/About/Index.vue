@@ -6,7 +6,7 @@
         :key="key"
         class="max-w-3xl mx-auto px-4 sm:px-8"
       >
-        <h1 class="text-2xl sm:text-3xl md:text-5xl font-bold text-dark leading-tight sm:leading-snug" v-html="title"></h1>
+        <h1 class="text-2xl mt-2 sm:mt-4 md:mt-6 sm:text-3xl md:text-5xl font-bold text-dark leading-tight sm:leading-snug" v-html="title"></h1>
 
         <div class="mt-6 sm:mt-8 space-y-4 sm:space-y-6 text-base sm:text-lg text-gray-700 text-left md:text-center">
           <p

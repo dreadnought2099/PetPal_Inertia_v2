@@ -3,14 +3,16 @@
 
     <AppLayout>
         <div
-            class="container mx-auto max-w-4xl bg-white mt-4 border border-primary rounded-lg shadow-md overflow-auto h-[80vh] p-6 space-y-10"
+            class="container mx-auto max-w-4xl bg-white mt-4 border border-primary rounded-lg shadow-md overflow-y-auto h-[80vh] sm:h-[85vh] lg:h-[90vh] p-4 sm:p-6 space-y-10"
         >
             <h1
-                class="flex items-center justify-center text-xl font-bold bg-white sticky top-0 py-3 px-4"
+                class="flex flex-wrap items-center justify-center text-lg sm:text-xl md:text-2xl font-bold bg-white sticky top-0 py-2 sm:py-3 px-2 sm:px-4 text-center"
             >
                 Pending Adoption <span class="text-primary ml-1">Requests</span>
             </h1>
-            <p class="text-gray-400 sticky top-12 px-4">
+            <p
+                class="text-gray-400 text-sm sm:text-base sticky top-12 px-2 sm:px-4 text-center sm:text-left"
+            >
                 Below are the pending requests for pet adoption
             </p>
 
@@ -20,19 +22,27 @@
                     :key="adoption.id"
                     class="flex items-center justify-between gap-4 px-4 py-4 border-b border-gray-200 w-full"
                 >
-                    <p class="text-gray-700">
-                        <span class="text-base text-primary font-medium">
-                            {{ adoption.first_name }}
-                            {{ adoption.middle_name }} {{ adoption.last_name }}
-                        </span>
-                        requested an adoption for
-                        <span class="text-base text-primary font-medium">
-                            {{ adoption.pet?.name || "Unknown Pet" }}
-                        </span>
-                    </p>
+                    <!-- Adoption Details -->
+                    <div
+                        class="flex flex-col sm:flex-row gap-2 sm:gap-4 flex-1"
+                    >
+                        <small class="text-gray-700 text-sm sm:text-base">
+                            <span class="text-primary font-medium">
+                                {{ adoption.first_name }}
+                                {{ adoption.middle_name }}
+                                {{ adoption.last_name }}
+                            </span>
+                            requested an adoption for
+                            <span class="text-primary font-medium">
+                                {{ adoption.pet?.name || "Unknown Pet" }}
+                            </span>
+                        </small>
+                    </div>
+
+                    <!-- View Details Button -->
                     <button
                         @click="openModal(adoption)"
-                        class="bg-primary text-white text-sm font-semibold rounded-md hover:bg-white hover:text-primary border hover:border-primary transition duration-300 px-4 py-2 cursor-pointer"
+                        class="sm:w-auto bg-primary text-white text-xs sm:text-sm font-semibold rounded-md border transition duration-300 hover:bg-white hover:text-primary hover:border-primary px-4 py-2 cursor-pointer text-center"
                     >
                         View Details
                     </button>
@@ -46,28 +56,31 @@
             </div>
 
             <!-- Modal -->
+            <!-- Modal -->
             <div
                 v-if="showModal"
-                class="modal fixed inset-0 flex items-center justify-center z-50 p-6 bg-black bg-opacity-75"
+                class="modal fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black bg-opacity-75 overflow-y-auto"
                 @click.self="closeModal"
             >
                 <div
-                    class="flex flex-col relative shadow-md border border-primary bg-white rounded-xl max-w-lg w-full p-6"
+                    class="relative flex flex-col max-h-[90vh] overflow-y-auto w-full max-w-sm sm:max-w-lg md:max-w-2xl bg-white border border-primary rounded-xl shadow-md p-4 sm:p-6"
                 >
                     <button
                         @click="closeModal"
                         title="Click to close the modal"
-                        class="absolute right-3 top-2 text-red-500 text-4xl hover:text-gray-400 hover:cursor-pointer"
+                        class="absolute top-2 right-3 text-red-500 text-3xl sm:text-4xl hover:text-gray-400 hover:cursor-pointer"
                     >
                         &times;
                     </button>
 
-                    <h2 class="text-xl mb-4 text-center py-6">
+                    <h2
+                        class="text-lg sm:text-xl mb-4 text-center py-2 sm:py-4"
+                    >
                         Adoption Request
                         <span class="text-primary">Details</span>
                     </h2>
 
-                    <p class="text-gray-700">
+                    <p class="text-sm sm:text-base text-gray-700">
                         Adopter's Name:
                         <span class="text-primary">
                             {{ selectedAdoption?.first_name }}
@@ -75,31 +88,31 @@
                             {{ selectedAdoption?.last_name }}
                         </span>
                     </p>
-                    <p class="text-gray-700">
+                    <p class="text-sm sm:text-base text-gray-700">
                         Pet Name:
                         <span class="text-primary">{{
                             selectedAdoption?.pet?.name || "Unknown Pet"
                         }}</span>
                     </p>
-                    <p class="text-gray-700">
+                    <p class="text-sm sm:text-base text-gray-700">
                         Address:
-                        <span class="text-primary">{{
+                        <span class="text-primary truncate">{{
                             selectedAdoption?.address
                         }}</span>
                     </p>
-                    <p class="text-gray-700">
+                    <p class="text-sm sm:text-base text-gray-700">
                         Contact Number:
-                        <span class="text-primary">{{
+                        <span class="text-primary truncate">{{
                             selectedAdoption?.contact_number
                         }}</span>
                     </p>
-                    <p class="text-gray-700">
+                    <p class="text-sm sm:text-base text-gray-700">
                         Date of Birth:
                         <span class="text-primary">{{
                             formatDate(selectedAdoption?.dob)
                         }}</span>
                     </p>
-                    <p class="text-gray-700">
+                    <p class="text-sm sm:text-base text-gray-700">
                         Previous Pet Experience:
                         <span class="text-primary">
                             {{
@@ -109,7 +122,7 @@
                             }}
                         </span>
                     </p>
-                    <p class="text-gray-700">
+                    <p class="text-sm sm:text-base text-gray-700">
                         Other pet at home:
                         <span class="text-primary">
                             {{
@@ -118,7 +131,7 @@
                             }}
                         </span>
                     </p>
-                    <p class="text-gray-700">
+                    <p class="text-sm sm:text-base text-gray-700">
                         Financial Preparedness:
                         <span class="text-primary">
                             {{
@@ -128,7 +141,7 @@
                             }}
                         </span>
                     </p>
-                    <p class="text-gray-700">
+                    <p class="text-sm sm:text-base text-gray-700">
                         Valid ID:
                         <a
                             :href="
@@ -152,16 +165,16 @@
                         </a>
                     </p>
 
-                    <div class="flex justify-end gap-4 mt-4">
+                    <div class="flex justify-end gap-3 mt-4">
                         <button
                             @click="handleApprove"
-                            class="bg-primary text-white px-4 py-2 rounded hover:bg-white hover:text-primary transition-all ease-in-out duration-300 border border-primary cursor-pointer"
+                            class="bg-primary text-white px-3 py-2 sm:px-4 sm:py-2 rounded hover:bg-white hover:text-primary transition-all ease-in-out duration-300 border border-primary cursor-pointer"
                         >
                             Approve
                         </button>
                         <button
                             @click="handleReject"
-                            class="bg-red-500 text-white px-4 py-2 rounded hover:bg-white hover:text-red-500 border border-red-500 transition-all ease-in-out cursor-pointer"
+                            class="bg-red-500 text-white px-3 py-2 sm:px-4 sm:py-2 rounded hover:bg-white hover:text-red-500 border border-red-500 transition-all ease-in-out cursor-pointer"
                         >
                             Reject
                         </button>
