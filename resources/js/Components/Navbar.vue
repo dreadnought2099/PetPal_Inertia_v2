@@ -132,7 +132,7 @@
                                 <form @submit.prevent="logout">
                                     <button
                                         type="submit"
-                                        class="w-full text-left px-4 py-2 text-primary hover:bg-gray-100 cursor-pointer"
+                                        class="w-full text-left px-4 py-2 text-primary text-secondary hover:bg-gray-100 cursor-pointer"
                                         title="Click to Logout"
                                     >
                                         Logout
@@ -278,7 +278,7 @@
                         <form @submit.prevent="logout" class="mt-2">
                             <button 
                                 type="submit" 
-                                class="w-full flex items-center gap-2 px-3 py-2 text-red-600 rounded-lg hover:bg-red-50 cursor-pointer text-sm" 
+                                class="w-full flex items-center gap-2 px-3 py-2 text-secondary rounded-lg hover:bg-red-50 cursor-pointer text-sm" 
                                 title="Click to Logout"
                             >
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
