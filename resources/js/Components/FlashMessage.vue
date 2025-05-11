@@ -21,7 +21,7 @@ const opacity = ref(1);
 
 const alertClasses = computed(() => {
     const baseClasses =
-        "p-3 rounded-md shadow-lg border-l-4 transition-opacity duration-500";
+        "p-1.5 sm:p-2 md:p-3 rounded-md shadow-lg border-l-4 transition-opacity duration-500 text-[10px] sm:text-xs md:text-sm";
     const typeClasses = {
         success: "bg-green-100 text-green-700",
         error: "bg-red-100 text-red-700",

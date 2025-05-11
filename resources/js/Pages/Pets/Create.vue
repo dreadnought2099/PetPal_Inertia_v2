@@ -1,10 +1,10 @@
 <template>
     <AppLayout>
         <div
-            class="container mx-auto max-w-5xl bg-white mt-4 border border-primary rounded-lg shadow-md overflow-y-auto h-[80vh]"
+            class="container mx-auto max-w-5xl bg-white mt-4 border border-primary rounded-lg shadow-md overflow-y-auto h-[80vh] px-4 sm:px-8"
         >
             <h2
-                class="flex gap-1 sticky top-0 py-2 px-4 text-2xl font-bold bg-white z-10 justify-center"
+                class="flex gap-1 sticky top-0 py-2 px-4 text-xl sm:text-2xl font-bold bg-white justify-center z-10"
             >
                 Add a <span class="text-primary">Pet</span>
             </h2>
@@ -12,7 +12,7 @@
             <form
                 @submit.prevent="submit"
                 enctype="multipart/form-data"
-                class="px-8 pt-6 pb-8 space-y-6"
+                class="pt-6 pb-8 space-y-4 sm:space-y-6"
             >
                 <!-- Text Inputs -->
                 <div
@@ -25,17 +25,17 @@
                         :name="field.name"
                         v-model="form[field.name]"
                         :placeholder="field.label"
-                        class="peer py-3 w-full placeholder-transparent rounded-md text-gray-700 ring-1 px-4 ring-gray-400 focus:ring-2 focus:ring-primary outline-none"
+                        class="peer py-1.5 sm:py-2 md:py-3 w-full placeholder-transparent rounded-md text-gray-700 ring-1 px-2 sm:px-4 ring-gray-400 focus:ring-2 focus:ring-primary outline-none text-[10px] sm:text-xs md:text-sm"
                         required
                     />
                     <label
-                        class="absolute left-3 -top-3 text-sm text-gray-600 bg-white px-1 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-focus:-top-3 peer-focus:text-primary peer-focus:text-sm peer-focus:px-2"
+                        class="absolute left-2 sm:left-3 -top-2 sm:-top-3 text-[10px] sm:text-xs md:text-sm text-gray-600 bg-white px-1 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-2 sm:peer-focus:-top-3 peer-focus:text-primary peer-focus:text-xs sm:peer-focus:text-sm peer-focus:px-2"
                     >
                         {{ field.label }}
                     </label>
                     <p
                         v-if="form.errors[field.name]"
-                        class="text-red-500 text-xs mt-1"
+                        class="text-red-500 text-[10px] sm:text-xs mt-0.5 sm:mt-1"
                     >
                         {{ form.errors[field.name] }}
                     </p>
@@ -89,7 +89,7 @@
                     <select
                         :name="select.name"
                         v-model="form[select.name]"
-                        class="peer py-3 w-full placeholder-transparent rounded-md text-gray-700 ring-1 px-4 ring-gray-400 focus:ring-2 focus:ring-primary outline-none"
+                        class="peer py-2 sm:py-3 w-full placeholder-transparent rounded-md text-gray-700 ring-1 px-4 ring-gray-400 focus:ring-2 focus:ring-primary outline-none text-sm sm:text-base"
                         required
                     >
                         <option value="" disabled>
@@ -104,7 +104,7 @@
                         </option>
                     </select>
                     <label
-                        class="absolute left-3 -top-3 text-sm text-gray-600 bg-white px-1 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-focus:-top-3 peer-focus:text-primary peer-focus:text-sm peer-focus:px-2"
+                        class="absolute left-3 -top-3 text-xs sm:text-sm text-gray-600 bg-white px-1 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-focus:-top-3 peer-focus:text-primary peer-focus:text-sm peer-focus:px-2"
                     >
                         {{ select.label }}
                     </label>
@@ -152,18 +152,18 @@
                 </div>
 
                 <!-- Buttons -->
-                <div class="flex space-x-4">
+                <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
                     <button
                         type="submit"
                         :disabled="form.processing"
-                        class="border border-primary bg-primary text-white font-bold py-2 px-4 rounded-lg transition hover:scale-105 hover:bg-white hover:text-primary hover:border-primary duration-300 cursor-pointer"
+                        class="border border-primary bg-primary text-white font-bold py-2 px-4 rounded-lg transition hover:scale-105 hover:bg-white hover:text-primary hover:border-primary duration-300 cursor-pointer text-sm sm:text-base"
                     >
                         Add
                     </button>
                     <button
                         type="button"
                         @click="goBack"
-                        class="border border-dark hover:border-primary bg-white text-dark font-bold py-2 px-4 rounded-lg transition hover:scale-105 hover:text-primary duration-300"
+                        class="border border-dark hover:border-primary bg-white text-dark font-bold py-2 px-4 rounded-lg transition hover:scale-105 hover:text-primary duration-300 text-sm sm:text-base"
                     >
                         Back
                     </button>

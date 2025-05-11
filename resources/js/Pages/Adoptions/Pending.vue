@@ -6,11 +6,11 @@
             class="container mx-auto max-w-4xl bg-white mt-4 border border-primary rounded-lg shadow-md overflow-auto h-[80vh] p-6 space-y-10"
         >
             <h1
-                class="flex items-center justify-center text-xl font-bold bg-white sticky top-0 py-3 px-4 z-10"
+                class="flex items-center justify-center text-xl font-bold bg-white sticky top-0 py-3 px-4"
             >
                 Pending Adoption <span class="text-primary ml-1">Requests</span>
             </h1>
-            <p class="text-gray-400 sticky top-12 px-4 z-10">
+            <p class="text-gray-400 sticky top-12 px-4">
                 Below are the pending requests for pet adoption
             </p>
 

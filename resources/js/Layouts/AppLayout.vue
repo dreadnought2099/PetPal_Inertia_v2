@@ -1,5 +1,8 @@
 <template>
-    <div class="min-h-screen bg-gray-100 flex flex-col">
+    <div class="min-h-screen bg-gray-100">
+        <Head>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        </Head>
         <!-- Flash Messages Container -->
         <div
             id="success-message-container"
@@ -30,7 +33,7 @@
 
         <Navbar />
 
-        <main class="py-6 flex-grow">
+        <main class="py-2 sm:py-4 md:py-8 px-2 sm:px-4 md:px-8">
             <slot />
         </main>
         <Footer />
@@ -39,7 +42,7 @@
 
 <script setup>
 import { computed } from "vue";
-import { usePage } from "@inertiajs/vue3";
+import { usePage, Head } from "@inertiajs/vue3";
 import FlashMessage from "../Components/FlashMessage.vue";
 import Navbar from "../Components/Navbar.vue";
 import Footer from "../Components/Footer.vue";
