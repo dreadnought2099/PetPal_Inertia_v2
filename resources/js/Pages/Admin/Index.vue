@@ -1,6 +1,6 @@
 <template>
     <AppLayout>
-        <div class="container mx-auto p-2 sm:p-4">
+        <div class="container mx-auto min-h-[calc(100vh-200px)] flex-items-center justify-center p-2 sm:p-4">
             <h2 class="text-xl sm:text-2xl text-center font-semibold mb-4 sm:mb-6">
                 Admin <span class="text-primary">Dashboard</span>
             </h2>

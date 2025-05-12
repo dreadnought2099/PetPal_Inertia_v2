@@ -95,7 +95,7 @@ const deletePet = (id, name) => {
             <!-- Modals -->
             <div v-if="selectedPet">
                 <div class="modal fixed inset-0 flex items-center justify-center z-20" @click.self="selectedPet = null">
-                    <div class="bg-white flex relative flex-col rounded-xl w-[280px] sm:max-w-md mx-2">
+                    <div class="bg-white flex relative flex-col rounded-xl w-100 sm:max-w-md mx-2">
                         <button
                             @click="selectedPet = null"
                             title="Click to close the modal"

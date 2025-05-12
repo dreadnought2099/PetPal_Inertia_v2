@@ -219,7 +219,7 @@ function submit() {
                     />
                     <label
                         class="absolute cursor-text left-0 -top-3 text-sm text-gray-600 bg-white mx-1 px-1 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-3 peer-focus:text-primary peer-focus:text-sm peer-focus:bg-white peer-focus:px-2 peer-focus:rounded-md"
-                        >Back of Valid ID (JPEG, PNG, JPG, PDF)</label
+                        >Back Valid ID (JPEG, PNG, JPG, PDF)</label
                     >
                 </div>
 
@@ -302,13 +302,13 @@ function submit() {
                 <div class="flex flex-col md:flex-row gap-4">
                     <button
                         type="submit"
-                        class="border hover:border-primary bg-primary hover:bg-white hover:text-primary text-white font-bold py-2 px-4 rounded-lg transition hover:scale-105 hover:opacity-80 duration-300"
+                        class="border hover:border-primary bg-primary hover:bg-white hover:text-primary text-white font-bold py-2 px-4 rounded-lg transition hover:scale-105 hover:opacity-80 duration-300 cursor-pointer"
                     >
                         Apply Now
                     </button>
                     <Link
                         :href="props.user ? '/pets' : '/home'"
-                        class="border hover:border-primary bg-white hover:bg-white hover:text-primary text-dark font-bold py-2 px-4 rounded-lg transition hover:scale-105 hover:opacity-80 duration-300"
+                        class="border hover:border-primary bg-white hover:bg-white hover:text-primary text-dark font-bold py-2 px-4 rounded-lg transition hover:scale-105 hover:opacity-80 duration-300 text-center"
                     >
                         Back
                     </Link>

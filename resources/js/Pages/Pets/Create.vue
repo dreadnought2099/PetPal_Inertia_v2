@@ -25,11 +25,11 @@
                         :name="field.name"
                         v-model="form[field.name]"
                         :placeholder="field.label"
-                        class="peer py-4 sm:py-4.5 md:py-5 px-5 sm:px-6 md:px-7 text-sm sm:text-base md:text-lg w-full placeholder-transparent rounded-md text-gray-700 ring-1 ring-gray-400 focus:ring-2 focus:ring-primary outline-none"
+                        class="peer py-3 w-full placeholder-transparent rounded-md text-gray-700 ring-1 px-4 ring-gray-400 focus:ring-2 focus:ring-primary focus:border-primary outline-none"
                         required
                     />
                     <label
-                        class="absolute left-3 sm:left-4 -top-2.5 sm:-top-3 text-xs sm:text-sm md:text-base text-gray-600 bg-white px-1 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2.5 sm:peer-placeholder-shown:top-3 peer-focus:-top-2.5 sm:peer-focus:-top-3 peer-focus:text-primary peer-focus:text-xs sm:peer-focus:text-sm peer-focus:px-2"
+                        class="absolute cursor-text left-0 -top-3 text-sm text-gray-600 bg-white mx-1 px-1 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-3 peer-focus:text-primary peer-focus:text-sm peer-focus:bg-white peer-focus:px-2 peer-focus:rounded-md"
                     >
                         {{ field.label }}
                     </label>

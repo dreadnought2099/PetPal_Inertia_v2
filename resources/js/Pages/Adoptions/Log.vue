@@ -4,7 +4,7 @@
     <AppLayout>
         <div class="container mx-auto max-w-5xl bg-white mt-2 sm:mt-6 border border-primary rounded-lg shadow-md overflow-hidden">
             <!-- Sticky Header -->
-            <div class="sticky top-0 z-10 bg-white border-b border-gray-200 pb-2 sm:pb-3 px-2 sm:px-6">
+            <div class="sticky top-0 z-9 bg-white border-b border-gray-100 pb-2 sm:pb-3 px-2 sm:px-6">
                 <h2 class="flex items-center justify-center text-lg sm:text-xl font-bold py-2 sm:py-3">
                     Adoption <span class="text-primary">Log</span>
                 </h2>

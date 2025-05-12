@@ -62,7 +62,7 @@
           </div>
         </div>
   
-        <div class="mt-8 sm:mt-10 pt-4 sm:pt-6 border-t border-gray-200">
+        <div class="mt-8 sm:mt-10 pt-4 sm:pt-6">
           <p class="text-center text-xs sm:text-sm text-gray-500">
             &copy; <span>{{ currentYear }}</span>
             <Link href="/" title="PetPal" class="text-gray-500 hover-underline-hyperlink mx-1">PetPal.</Link>All Rights Reserved.
